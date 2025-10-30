@@ -45,6 +45,61 @@ JOIN_PATHS = {
         "depends_on": [],
         "type": JoinType.LEFT,
     },
+    "item_product_sales": {
+        "sql": "LEFT JOIN item_product_sales ON item_product_sales.product_sale_id = product_sales.id",
+        "depends_on": ["product_sales"],
+        "type": JoinType.LEFT,
+    },
+    "items": {
+        "sql": "LEFT JOIN items ON item_product_sales.item_id = items.id",
+        "depends_on": ["item_product_sales"],
+        "type": JoinType.LEFT,
+    },
+    "option_groups": {
+        "sql": "LEFT JOIN option_groups ON item_product_sales.option_group_id = option_groups.id",
+        "depends_on": ["item_product_sales"],
+        "type": JoinType.LEFT,
+    },
+    "brands": {
+        "sql": "LEFT JOIN brands ON stores.brand_id = brands.id",
+        "depends_on": ["stores"],
+        "type": JoinType.LEFT,
+    },
+    "sub_brands": {
+        "sql": "LEFT JOIN sub_brands ON stores.sub_brand_id = sub_brands.id",
+        "depends_on": ["stores"],
+        "type": JoinType.LEFT,
+    },
+    "payments": {
+        "sql": "LEFT JOIN payments ON payments.sale_id = sales.id",
+        "depends_on": [],
+        "type": JoinType.LEFT,
+    },
+    "payment_types": {
+        "sql": "LEFT JOIN payment_types ON payments.payment_type_id = payment_types.id",
+        "depends_on": ["payments"],
+        "type": JoinType.LEFT,
+    },
+    "coupon_sales": {
+        "sql": "LEFT JOIN coupon_sales ON coupon_sales.sale_id = sales.id",
+        "depends_on": [],
+        "type": JoinType.LEFT,
+    },
+    "coupons": {
+        "sql": "LEFT JOIN coupons ON coupon_sales.coupon_id = coupons.id",
+        "depends_on": ["coupon_sales"],
+        "type": JoinType.LEFT,
+    },
+    "delivery_sales": {
+        "sql": "LEFT JOIN delivery_sales ON delivery_sales.sale_id = sales.id",
+        "depends_on": [],
+        "type": JoinType.LEFT,
+    },
+    "delivery_addresses": {
+        "sql": "LEFT JOIN delivery_addresses ON delivery_addresses.sale_id = sales.id",
+        "depends_on": [],
+        "type": JoinType.LEFT,
+    },
 }
 
 
@@ -114,6 +169,42 @@ METRICS = {
         "label": "Total de Produtos Vendidos",
         "joins_needed": ["product_sales"],
         "type": "number",
+    },
+    "total_addons_vendidos": {
+        "sql": "SUM(item_product_sales.quantity)",
+        "label": "Total de Addons Vendidos",
+        "joins_needed": ["item_product_sales"],
+        "type": "number",
+    },
+    "receita_total_addons": {
+        "sql": "SUM(item_product_sales.additional_price)",
+        "label": "Receita Total de Addons",
+        "joins_needed": ["item_product_sales"],
+        "type": "currency",
+    },
+    "total_processado_pagamentos": {
+        "sql": "SUM(payments.value)",
+        "label": "Total Processado (Pagamentos)",
+        "joins_needed": ["payments"],
+        "type": "currency",
+    },
+    "total_desconto_cupom": {
+        "sql": "SUM(coupon_sales.value)",
+        "label": "Total Desconto (Cupons)",
+        "joins_needed": ["coupon_sales"],
+        "type": "currency",
+    },
+    "total_cupons_usados": {
+        "sql": "COUNT(DISTINCT coupon_sales.id)",
+        "label": "Total de Cupons Usados",
+        "joins_needed": ["coupon_sales"],
+        "type": "number",
+    },
+    "total_custo_entregador": {
+        "sql": "SUM(delivery_sales.courier_fee)",
+        "label": "Custo Total (Entregador)",
+        "joins_needed": ["delivery_sales"],
+        "type": "currency",
     },
 }
 
@@ -212,5 +303,55 @@ DIMENSIONS = {
         "sql": "customers.gender",
         "label": "Gênero do Cliente",
         "joins_needed": ["customers"],
+    },
+    "cliente_origem_cadastro": {
+        "sql": "customers.registration_origin",
+        "label": "Origem do Cadastro",
+        "joins_needed": ["customers"],
+    },
+    "metodo_pagamento": {
+        "sql": "payment_types.description",
+        "label": "Método de Pagamento",
+        "joins_needed": ["payment_types"],
+    },
+    "pagamento_online": {
+        "sql": "payments.is_online",
+        "label": "Pagamento Online?",
+        "joins_needed": ["payments"],
+    },
+    "cupom_codigo": {
+        "sql": "coupons.code",
+        "label": "Código do Cupom",
+        "joins_needed": ["coupons"],
+    },
+    "cupom_tipo_desconto": {
+        "sql": "coupons.discount_type",
+        "label": "Tipo de Desconto (Cupom)",
+        "joins_needed": ["coupons"],
+    },
+    "entregador_nome": {
+        "sql": "delivery_sales.courier_name",
+        "label": "Entregador",
+        "joins_needed": ["delivery_sales"],
+    },
+    "entregue_por": {
+        "sql": "delivery_sales.delivered_by",
+        "label": "Entregue Por",
+        "joins_needed": ["delivery_sales"],
+    },
+    "tipo_entrega": {
+        "sql": "delivery_sales.delivery_type",
+        "label": "Tipo de Veículo (Entrega)",
+        "joins_needed": ["delivery_sales"],
+    },
+    "bairro_entrega": {
+        "sql": "delivery_addresses.neighborhood",
+        "label": "Bairro de Entrega",
+        "joins_needed": ["delivery_addresses"],
+    },
+    "cidade_entrega": {
+        "sql": "delivery_addresses.city",
+        "label": "Cidade de Entrega",
+        "joins_needed": ["delivery_addresses"],
     },
 }
