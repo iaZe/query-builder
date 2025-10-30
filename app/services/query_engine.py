@@ -1,0 +1,199 @@
+from typing import List, Set, Any, Tuple, Dict
+from app.api.v1.schemas import QueryRequest, FilterOperator, OrderBy
+from app.services.semantic_layer import METRICS, DIMENSIONS, JOIN_PATHS
+
+
+class QueryBuilder:
+    def __init__(self, request: QueryRequest):
+        self.request = request
+
+        self.select_clause: List[str] = []
+        self.join_clause: List[str] = []
+        self.where_clause: List[str] = []
+        self.group_by_clause: List[str] = []
+        self.order_by_clause: List[str] = []
+        self.params: List[Any] = []
+
+        self.param_count: int = 0
+        self.required_joins: List[str] = []
+        self.field_map: Dict[str, str] = {}
+
+    def build(self) -> Tuple[str, List[Any]]:
+        self._collect_fields_and_joins()
+
+        self._build_select_clause()
+        self._build_join_clause()
+        self._build_where_clause()
+        self._build_group_by_clause()
+        self._build_order_by_clause()
+
+        sql = self._construct_final_sql()
+
+        return sql, self.params
+
+    def _collect_fields_and_joins(self):
+        all_field_names = set(self.request.metrics) | set(self.request.dimensions)
+        all_field_names.update(f.field for f in self.request.filters)
+        all_field_names.update(o.field for o in self.request.order_by)
+
+        for field_name in all_field_names:
+            field_info = METRICS.get(field_name) or DIMENSIONS.get(field_name)
+
+            if not field_info:
+                raise ValueError(
+                    f"Campo desconhecido: '{field_name}' não foi encontrado na camada semântica."
+                )
+
+            self.field_map[field_name] = field_info["sql"]
+
+            if "joins_needed" in field_info:
+                for join_name in field_info["joins_needed"]:
+                    self._add_join_with_dependencies(join_name)
+
+    def _add_join_with_dependencies(self, join_name: str):
+        if join_name in self.required_joins:
+            return
+
+        join_info = JOIN_PATHS.get(join_name)
+        if not join_info:
+            raise ValueError(
+                f"Configuração de Join inválida: '{join_name}' não encontrado em JOIN_PATHS."
+            )
+
+        dependencies = join_info.get("depends_on")
+        if dependencies:
+            for dependency in dependencies:
+                self._add_join_with_dependencies(dependency)
+
+        if join_name not in self.required_joins:
+            self.required_joins.append(join_name)
+
+    def _build_join_clause(self):
+        for join_name in self.required_joins:
+            join_info = JOIN_PATHS.get(join_name)
+            if join_info:
+                self.join_clause.append(join_info["sql"])
+            else:
+                raise ValueError(
+                    f"Join '{join_name}' é necessário mas não foi encontrado em JOIN_PATHS."
+                )
+
+    def _build_select_clause(self):
+        for metric_name in self.request.metrics:
+            sql = self.field_map[metric_name]
+            self.select_clause.append(f'{sql} AS "{metric_name}"')
+
+        for dim_name in self.request.dimensions:
+            sql = self.field_map[dim_name]
+            self.select_clause.append(f'{sql} AS "{dim_name}"')
+
+    def _build_where_clause(self):
+        for f in self.request.filters:
+            field_sql = self.field_map[f.field]
+            sql_fragment, params = self._build_filter_fragment(
+                field_sql, f.operator, f.value
+            )
+
+            self.where_clause.append(sql_fragment)
+            self.params.extend(params)
+
+    def _get_next_placeholder(self) -> str:
+        self.param_count += 1
+        return f"${self.param_count}"
+
+    def _build_filter_fragment(
+        self, field_sql: str, op: FilterOperator, value: Any
+    ) -> Tuple[str, List[Any]]:
+        op_map = {
+            FilterOperator.EQ: "=",
+            FilterOperator.NEQ: "!=",
+            FilterOperator.GT: ">",
+            FilterOperator.GTE: ">=",
+            FilterOperator.LT: "<",
+            FilterOperator.LTE: "<=",
+        }
+
+        if op in op_map:
+            placeholder = self._get_next_placeholder()
+            return f"{field_sql} {op_map[op]} {placeholder}", [value]
+
+        if op == FilterOperator.CONTAINS:
+            placeholder = self._get_next_placeholder()
+            return f"{field_sql} LIKE {placeholder}", [f"%{value}%"]
+
+        if op == FilterOperator.IN:
+            placeholder = self._get_next_placeholder()
+            return f"{field_sql} = ANY({placeholder})", [value]
+
+        if op == FilterOperator.NOT_IN:
+            placeholder = self._get_next_placeholder()
+            return f"{field_sql} != ALL({placeholder})", [value]
+
+        if op == FilterOperator.BETWEEN:
+            placeholder1 = self._get_next_placeholder()
+            placeholder2 = self._get_next_placeholder()
+            return f"{field_sql} BETWEEN {placeholder1} AND {placeholder2}", [
+                value[0],
+                value[1],
+            ]
+
+        raise ValueError(f"Operador de filtro desconhecido: {op}")
+
+    def _build_group_by_clause(self):
+        if not self.request.dimensions:
+            return
+
+        for dim_name in self.request.dimensions:
+            self.group_by_clause.append(self.field_map[dim_name])
+
+    def _build_order_by_clause(self):
+        allowed_fields = set(self.request.metrics) | set(self.request.dimensions)
+
+        for order in self.request.order_by:
+            if order.field not in allowed_fields:
+                raise ValueError(
+                    f"Campo de ordenação inválido: '{order.field}'. "
+                    "Só é permitido ordenar por métricas ou dimensões da query."
+                )
+
+            direction = order.direction.value.upper()
+            self.order_by_clause.append(f'"{order.field}" {direction}')
+
+    def _construct_final_sql(self) -> str:
+
+        if not self.select_clause:
+            raise ValueError(
+                "A query não pode ser construída sem métricas ou dimensões."
+            )
+
+        select_str = f"SELECT {', '.join(self.select_clause)}"
+        from_str = "FROM sales"
+        join_str = "\n".join(self.join_clause)
+
+        where_str = ""
+        if self.where_clause:
+            where_str = f"WHERE {' AND '.join(self.where_clause)}"
+
+        group_by_str = ""
+        if self.group_by_clause:
+            group_by_str = f"GROUP BY {', '.join(self.group_by_clause)}"
+
+        order_by_str = ""
+        if self.order_by_clause:
+            order_by_str = f"ORDER BY {', '.join(self.order_by_clause)}"
+
+        limit_str = ""
+        if self.request.limit:
+            limit_str = f"LIMIT {self.request.limit}"
+
+        query_parts = [
+            select_str,
+            from_str,
+            join_str,
+            where_str,
+            group_by_str,
+            order_by_str,
+            limit_str,
+        ]
+
+        return "\n".join(part for part in query_parts if part)

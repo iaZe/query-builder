@@ -1,0 +1,49 @@
+# Ignorar arquivos temporários e caches do Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+.venv/*
+
+# Arquivos de configuração de ambiente
+.env
+.env.* 
+*.env
+
+# Distribuição / empacotamento
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+share/python-wheels/
+
+# Testes / coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+junit*.xml
+
+# Ferramentas de lint/typecheck/cache
+.mypy_cache/
+.pyre/
+.pytype/
+.cache/
+ .ruff_cache/
+
+# Logs e arquivos temporários
+*.log
+logs/
+tmp/
+temp/
+*.tmp
