@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,10 +9,12 @@ from app.api.v1.endpoints import router as api_v1_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    logging.info("Iniciando aplicação")
     await connect_to_db()
 
     yield
 
+    logging.info("Desligando aplicação")
     await close_db_connection()
 
 

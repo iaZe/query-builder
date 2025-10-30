@@ -26,6 +26,9 @@ async def run_query(
         builder = QueryBuilder(request)
         sql, params = builder.build()
 
+        logging.debug(f"SQL Gerado: {sql}")
+        logging.debug(f"Parâmetros: {params}")
+
         results = await conn.fetch(sql, *params)
 
         end_time = time.perf_counter()

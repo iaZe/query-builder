@@ -1,4 +1,5 @@
 import asyncpg
+import logging
 from typing import AsyncGenerator
 from fastapi import HTTPException
 from app.core.config import settings
@@ -14,7 +15,9 @@ async def connect_to_db():
             min_size=5,
             max_size=20,
         )
+        logging.info("Pool de conexões com o PostgreSQL criado com sucesso.")
     except Exception as e:
+        logging.critical(f"Falha ao criar o pool de conexões: {e}")
         raise e
 
 
@@ -22,6 +25,7 @@ async def close_db_connection():
     global db_pool
     if db_pool:
         await db_pool.close()
+        logging.info("Pool de conexões com o PostgreSQL fechado.")
 
 
 async def get_db_connection() -> AsyncGenerator[asyncpg.Connection, None]:
