@@ -8,6 +8,7 @@ db_pool: asyncpg.Pool = None
 
 
 async def connect_to_db():
+    """Cria o pool de conexões."""
     global db_pool
     try:
         db_pool = await asyncpg.create_pool(
@@ -22,6 +23,7 @@ async def connect_to_db():
 
 
 async def close_db_connection():
+    """Fecha o pool de conexões."""
     global db_pool
     if db_pool:
         await db_pool.close()
@@ -29,6 +31,7 @@ async def close_db_connection():
 
 
 async def get_db_connection() -> AsyncGenerator[asyncpg.Connection, None]:
+    """Fornece uma conexão do pool para uso em requisições."""
     if not db_pool:
         raise HTTPException(
             status_code=500, detail="O pool de conexões não foi inicializado."

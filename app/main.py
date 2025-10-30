@@ -6,9 +6,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import connect_to_db, close_db_connection
 from app.api.v1.endpoints import router as api_v1_router
 
+logging.basicConfig(level=logging.INFO)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """
+    Gerencia o startup e shutdown da aplicação.
+    Conecta ao banco antes da aplicação começar a receber requests
+    e desconecta quando a aplicação está desligando.
+    """
     logging.info("Iniciando aplicação")
     await connect_to_db()
 
@@ -38,4 +45,7 @@ app.include_router(api_v1_router, prefix="/api")
 
 @app.get("/", tags=["Health Check"])
 def read_root():
+    """
+    Endpoint "Health Check" para verificar se a API está online.
+    """
     return {"status": "ok", "message": "Analytics API está no ar!"}

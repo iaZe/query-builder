@@ -4,26 +4,29 @@ from enum import Enum
 
 
 class FilterOperator(str, Enum):
+    """Operadores de filtro que suportamos."""
 
-    EQ = "eq"
-    NEQ = "neq"
-    GT = "gt"
-    GTE = "gte"
-    LT = "lt"
-    LTE = "lte"
-    IN = "in"
-    NOT_IN = "not_in"
-    BETWEEN = "between"
-    CONTAINS = "contains"
+    EQ = "eq"  # Igual
+    NEQ = "neq"  # Não-igual
+    GT = "gt"  # Maior que
+    GTE = "gte"  # Maior ou igual
+    LT = "lt"  # Menor que
+    LTE = "lte"  # Menor ou igual
+    IN = "in"  # Em (para listas)
+    NOT_IN = "not_in"  # Não em
+    BETWEEN = "between"  # Entre dois valores
+    CONTAINS = "contains"  # Para strings (LIKE)
 
 
 class SortDirection(str, Enum):
+    """Direção da ordenação."""
 
     ASC = "asc"
     DESC = "desc"
 
 
 class Filter(BaseModel):
+    """Define um único filtro a ser aplicado."""
 
     field: str
     operator: FilterOperator
@@ -50,12 +53,14 @@ class Filter(BaseModel):
 
 
 class OrderBy(BaseModel):
+    """Define uma regra de ordenação."""
 
     field: str
     direction: SortDirection = SortDirection.ASC
 
 
 class QueryRequest(BaseModel):
+    """O corpo da requisição de query."""
 
     metrics: List[str] = Field(
         ...,
@@ -76,7 +81,7 @@ class QueryRequest(BaseModel):
     )
     limit: Optional[int] = Field(
         1000,
-        le=100_000,
+        le=100_000,  # le = Less than or Equal to
         description="Limite de linhas. Padrão 1000. Máximo 100.000.",
     )
 
@@ -86,6 +91,7 @@ class QueryRequest(BaseModel):
 
 
 class QueryResponse(BaseModel):
+    """Define a resposta que nossa API enviará de volta."""
 
     query_sql: str
     data: List[Dict[str, Any]]
@@ -93,6 +99,9 @@ class QueryResponse(BaseModel):
 
 
 class DefinitionItem(BaseModel):
+    """
+    Descreve uma única Métrica ou Dimensão disponível.
+    """
 
     sql: str
     label: str
@@ -101,6 +110,7 @@ class DefinitionItem(BaseModel):
 
 
 class DefinitionsResponse(BaseModel):
+    """Retorna o "cardápio" de opções de query."""
 
     metrics: Dict[str, DefinitionItem]
     dimensions: Dict[str, DefinitionItem]

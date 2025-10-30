@@ -4,6 +4,16 @@ from app.services.semantic_layer import METRICS, DIMENSIONS, JOIN_PATHS
 
 
 class QueryBuilder:
+    """
+    Traduz um objeto QueryRequest (da API) em uma string SQL otimizada.
+
+    Esta classe segue o Princípio Aberto/Fechado (SOLID):
+    - É FECHADA para modificação (você não precisa mudar este código para
+      adicionar novas funcionalidades).
+    - É ABERTA para extensão (você pode adicionar novas métricas/dimensões
+      no semantic_layer.py e elas serão suportadas aqui).
+    """
+
     def __init__(self, request: QueryRequest):
         self.request = request
 
@@ -19,6 +29,11 @@ class QueryBuilder:
         self.field_map: Dict[str, str] = {}
 
     def build(self) -> Tuple[str, List[Any]]:
+        """
+        Constrói a query SQL completa e retorna a string SQL
+        junto com a lista de parâmetros.
+        """
+
         self._collect_fields_and_joins()
 
         self._build_select_clause()
@@ -32,6 +47,11 @@ class QueryBuilder:
         return sql, self.params
 
     def _collect_fields_and_joins(self):
+        """
+        Coleta todos os campos usados na query (métricas, dimensões,
+        filtros, ordenações) e resolve os joins necessários.
+        """
+
         all_field_names = set(self.request.metrics) | set(self.request.dimensions)
         all_field_names.update(f.field for f in self.request.filters)
         all_field_names.update(o.field for o in self.request.order_by)
@@ -51,6 +71,10 @@ class QueryBuilder:
                     self._add_join_with_dependencies(join_name)
 
     def _add_join_with_dependencies(self, join_name: str):
+        """
+        Adiciona um join e suas dependências recursivamente.
+        """
+
         if join_name in self.required_joins:
             return
 
@@ -69,6 +93,10 @@ class QueryBuilder:
             self.required_joins.append(join_name)
 
     def _build_join_clause(self):
+        """
+        Constrói a cláusula JOIN baseada nos joins necessários.
+        """
+
         for join_name in self.required_joins:
             join_info = JOIN_PATHS.get(join_name)
             if join_info:
@@ -79,6 +107,10 @@ class QueryBuilder:
                 )
 
     def _build_select_clause(self):
+        """
+        Constrói a cláusula SELECT usando os aliases (AS).
+        """
+
         for metric_name in self.request.metrics:
             sql = self.field_map[metric_name]
             self.select_clause.append(f'{sql} AS "{metric_name}"')
@@ -88,6 +120,10 @@ class QueryBuilder:
             self.select_clause.append(f'{sql} AS "{dim_name}"')
 
     def _build_where_clause(self):
+        """
+        Constrói a cláusula WHERE com base nos filtros.
+        """
+
         for f in self.request.filters:
             field_sql = self.field_map[f.field]
             sql_fragment, params = self._build_filter_fragment(
@@ -98,12 +134,21 @@ class QueryBuilder:
             self.params.extend(params)
 
     def _get_next_placeholder(self) -> str:
+        """
+        Retorna o próximo placeholder numerando os parâmetro (ex: $1, $2)
+        """
+
         self.param_count += 1
         return f"${self.param_count}"
 
     def _build_filter_fragment(
         self, field_sql: str, op: FilterOperator, value: Any
     ) -> Tuple[str, List[Any]]:
+        """
+        Constrói o fragmento SQL para um filtro específico
+        baseado no operador e valor.
+        """
+
         op_map = {
             FilterOperator.EQ: "=",
             FilterOperator.NEQ: "!=",
@@ -140,6 +185,10 @@ class QueryBuilder:
         raise ValueError(f"Operador de filtro desconhecido: {op}")
 
     def _build_group_by_clause(self):
+        """
+        Constrói a cláusula GROUP BY baseada nas dimensões.
+        """
+
         if not self.request.dimensions:
             return
 
@@ -147,6 +196,10 @@ class QueryBuilder:
             self.group_by_clause.append(self.field_map[dim_name])
 
     def _build_order_by_clause(self):
+        """
+        Constrói a cláusula ORDER BY baseada nas regras de ordenação.
+        """
+
         allowed_fields = set(self.request.metrics) | set(self.request.dimensions)
 
         for order in self.request.order_by:
@@ -160,6 +213,9 @@ class QueryBuilder:
             self.order_by_clause.append(f'"{order.field}" {direction}')
 
     def _construct_final_sql(self) -> str:
+        """
+        Constrói a query SQL final combinando todas as cláusulas.
+        """
 
         if not self.select_clause:
             raise ValueError(

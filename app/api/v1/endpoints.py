@@ -13,6 +13,11 @@ router = APIRouter(prefix="/v1", tags=["Query Engine"])
 
 @router.get("/definitions", response_model=DefinitionsResponse, tags=["Definitions"])
 async def get_definitions():
+    """
+    Retorna as definições de métricas e dimensões disponíveis
+    na camada semântica.
+    """
+
     return {"metrics": METRICS, "dimensions": DIMENSIONS}
 
 
@@ -20,6 +25,11 @@ async def get_definitions():
 async def run_query(
     request: QueryRequest, conn: asyncpg.Connection = Depends(get_db_connection)
 ):
+    """
+    Endpoint principal que recebe a definição da query (métricas,
+    dimensões, filtros) e retorna o resultado.
+    """
+
     start_time = time.perf_counter()
 
     try:
