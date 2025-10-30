@@ -37,14 +37,6 @@ JOIN_PATHS = {
         "depends_on": ["products"],
         "type": JoinType.LEFT,
     },
-    "payment_types": {
-        "sql": """
-            JOIN payments ON payments.sale_id = sales.id
-            JOIN payment_types ON payments.payment_type_id = payment_types.id
-        """,
-        "depends_on": [],
-        "type": JoinType.LEFT,
-    },
     "item_product_sales": {
         "sql": "LEFT JOIN item_product_sales ON item_product_sales.product_sale_id = product_sales.id",
         "depends_on": ["product_sales"],
@@ -213,145 +205,180 @@ DIMENSIONS = {
     "data_venda": {
         "sql": "DATE_TRUNC('day', sales.created_at)",
         "label": "Data da Venda",
+        "type": "time",
     },
     "hora_venda": {
         "sql": "EXTRACT(HOUR FROM sales.created_at)",
         "label": "Hora da Venda",
+        "type": "category",
     },
     "dia_da_semana": {
         "sql": "EXTRACT(DOW FROM sales.created_at)",
         "label": "Dia da Semana",
+        "type": "category",
     },
     "mes_venda": {
         "sql": "DATE_TRUNC('month', sales.created_at)",
         "label": "Mês da Venda",
+        "type": "time",
     },
     "ano_venda": {
         "sql": "DATE_TRUNC('year', sales.created_at)",
         "label": "Ano da Venda",
+        "type": "time",
     },
     "status_venda": {
         "sql": "sales.sale_status_desc",
         "label": "Status da Venda",
+        "type": "category",
     },
     "origem_venda": {
         "sql": "sales.origin",
         "label": "Origem da Venda",
+        "type": "category",
     },
     "loja_nome": {
         "sql": "stores.name",
         "label": "Nome da Loja",
         "joins_needed": ["stores"],
+        "type": "category",
     },
     "loja_cidade": {
         "sql": "stores.city",
         "label": "Cidade da Loja",
         "joins_needed": ["stores"],
+        "type": "geographic",
     },
     "loja_estado": {
         "sql": "stores.state",
         "label": "Estado da Loja",
         "joins_needed": ["stores"],
+        "type": "geographic",
     },
     "loja_bairro": {
         "sql": "stores.district",
         "label": "Bairro da Loja",
         "joins_needed": ["stores"],
+        "type": "geographic",
     },
     "loja_propria": {
         "sql": "stores.is_own",
         "label": "Loja Própria?",
         "joins_needed": ["stores"],
+        "type": "category",
     },
-    "marca_nome": {"sql": "brands.name", "label": "Marca", "joins_needed": ["brands"]},
+    "marca_nome": {
+        "sql": "brands.name",
+        "label": "Marca",
+        "joins_needed": ["brands"],
+        "type": "category",
+    },
     "sub_marca_nome": {
         "sql": "sub_brands.name",
         "label": "Sub-marca",
         "joins_needed": ["sub_brands"],
+        "type": "category",
     },
     "canal_nome": {
         "sql": "channels.name",
         "label": "Canal",
         "joins_needed": ["channels"],
+        "type": "category",
     },
     "canal_tipo": {
         "sql": "channels.type",
         "label": "Tipo de Canal",
         "joins_needed": ["channels"],
+        "type": "category",
     },
     "produto_nome": {
         "sql": "products.name",
         "label": "Produto",
         "joins_needed": ["products"],
+        "type": "category",
     },
     "categoria_produto": {
         "sql": "categories.name",
         "label": "Categoria",
         "joins_needed": ["categories"],
+        "type": "category",
     },
     "addon_nome": {
         "sql": "items.name",
         "label": "Addon (Item)",
         "joins_needed": ["items"],
+        "type": "category",
     },
     "addon_grupo": {
         "sql": "option_groups.name",
         "label": "Grupo de Addon",
         "joins_needed": ["option_groups"],
+        "type": "category",
     },
     "cliente_genero": {
         "sql": "customers.gender",
         "label": "Gênero do Cliente",
         "joins_needed": ["customers"],
+        "type": "category",
     },
     "cliente_origem_cadastro": {
         "sql": "customers.registration_origin",
         "label": "Origem do Cadastro",
         "joins_needed": ["customers"],
+        "type": "category",
     },
     "metodo_pagamento": {
         "sql": "payment_types.description",
         "label": "Método de Pagamento",
         "joins_needed": ["payment_types"],
+        "type": "category",
     },
     "pagamento_online": {
         "sql": "payments.is_online",
         "label": "Pagamento Online?",
         "joins_needed": ["payments"],
+        "type": "category",
     },
     "cupom_codigo": {
         "sql": "coupons.code",
         "label": "Código do Cupom",
         "joins_needed": ["coupons"],
+        "type": "string",
     },
     "cupom_tipo_desconto": {
         "sql": "coupons.discount_type",
         "label": "Tipo de Desconto (Cupom)",
         "joins_needed": ["coupons"],
+        "type": "category",
     },
     "entregador_nome": {
         "sql": "delivery_sales.courier_name",
         "label": "Entregador",
         "joins_needed": ["delivery_sales"],
+        "type": "string",
     },
     "entregue_por": {
         "sql": "delivery_sales.delivered_by",
         "label": "Entregue Por",
         "joins_needed": ["delivery_sales"],
+        "type": "category",
     },
     "tipo_entrega": {
         "sql": "delivery_sales.delivery_type",
         "label": "Tipo de Veículo (Entrega)",
         "joins_needed": ["delivery_sales"],
+        "type": "category",
     },
     "bairro_entrega": {
         "sql": "delivery_addresses.neighborhood",
         "label": "Bairro de Entrega",
         "joins_needed": ["delivery_addresses"],
+        "type": "geographic",
     },
     "cidade_entrega": {
         "sql": "delivery_addresses.city",
         "label": "Cidade de Entrega",
         "joins_needed": ["delivery_addresses"],
+        "type": "geographic",
     },
 }
