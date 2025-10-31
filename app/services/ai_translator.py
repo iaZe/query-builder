@@ -17,6 +17,15 @@ REGRAS ESTRICTAS:
 4. Se o usuário pedir "top 3", "5 mais", etc., use "order_by" e "limit".
 5. Se o usuário não especificar uma métrica, use "total_vendas" como padrão.
 6. Se o usuário não especificar dimensões, use uma lista vazia [].
+7. Você *não* sabe a data de hoje. Se o usuário pedir um período 
+relativo (ex: "últimos 7 dias", "mês passado", "hoje"), *NÃO* crie um filtro de 
+data. Em vez disso, use a chave "dateRange" com um dos seguintes valores:
+   - "last_7_days"
+   - "last_30_days"
+   - "last_6_months"
+   - "last_12_months"
+   - "this_year"
+   Escolha o valor que mais se aproxima do pedido do usuário.
 
 ---
 CHAVES DE MÉTRICAS DISPONÍVEIS (Use a chave, não a label):
@@ -40,6 +49,17 @@ JSON:
     {{"field": "total_vendas", "direction": "desc"}}
   ],
   "limit": 3
+}}
+
+Usuário: "vendas nos últimos 2 meses"
+JSON:
+{{
+  "metrics": ["total_vendas"],
+  "dimensions": [],
+  "filters": [],
+  "dateRange": "last_6_months",
+  "order_by": [],
+  "limit": 100
 }}
 
 Usuário: "Qual o ticket médio por método de pagamento, apenas para pedidos cancelados?"

@@ -84,6 +84,7 @@ class QueryRequest(BaseModel):
         le=100_000,  # le = Less than or Equal to
         description="Limite de linhas. Padrão 1000. Máximo 100.000.",
     )
+    dateRange: Optional[str] = None 
 
     @field_validator("metrics")
     def metrics_must_not_be_empty(cls, v):

@@ -1,6 +1,32 @@
+import datetime
+from dateutil.relativedelta import relativedelta
 from typing import List, Set, Any, Tuple, Dict
 from app.api.v1.schemas import QueryRequest, FilterOperator, OrderBy
 from app.services.semantic_layer import METRICS, DIMENSIONS, JOIN_PATHS
+
+
+def _get_date_range_filter(date_range_key: str) -> Tuple[str, List[Any]]:
+    """
+    Traduz o string do seletor de período em um filtro SQL real.
+    """
+    today = datetime.date.today()
+    start_date = None
+
+    if date_range_key == 'last_7_days':
+        start_date = today - datetime.timedelta(days=6)
+    elif date_range_key == 'last_30_days':
+        start_date = today - datetime.timedelta(days=29)
+    elif date_range_key == 'last_6_months':
+        start_date = today - relativedelta(months=6)
+    elif date_range_key == 'last_12_months':
+        start_date = today - relativedelta(months=12)
+    elif date_range_key == 'this_year':
+        start_date = today.replace(month=1, day=1)
+    
+    if start_date:
+        return "sales.created_at >= %s", [start_date]
+    
+    return None, []
 
 
 class QueryBuilder:
@@ -123,6 +149,12 @@ class QueryBuilder:
         """
         Constrói a cláusula WHERE com base nos filtros.
         """
+        if self.request.dateRange:
+            sql_fragment, params = _get_date_range_filter(self.request.dateRange)
+            if sql_fragment:
+                placeholder = self._get_next_placeholder()
+                self.where_clause.append(sql_fragment.replace("%s", placeholder))
+                self.params.extend(params)
 
         for f in self.request.filters:
             field_sql = self.field_map[f.field]
