@@ -12,20 +12,20 @@ def _get_date_range_filter(date_range_key: str) -> Tuple[str, List[Any]]:
     today = datetime.date.today()
     start_date = None
 
-    if date_range_key == 'last_7_days':
+    if date_range_key == "last_7_days":
         start_date = today - datetime.timedelta(days=6)
-    elif date_range_key == 'last_30_days':
+    elif date_range_key == "last_30_days":
         start_date = today - datetime.timedelta(days=29)
-    elif date_range_key == 'last_6_months':
+    elif date_range_key == "last_6_months":
         start_date = today - relativedelta(months=6)
-    elif date_range_key == 'last_12_months':
+    elif date_range_key == "last_12_months":
         start_date = today - relativedelta(months=12)
-    elif date_range_key == 'this_year':
+    elif date_range_key == "this_year":
         start_date = today.replace(month=1, day=1)
-    
+
     if start_date:
         return "sales.created_at >= %s", [start_date]
-    
+
     return None, []
 
 
@@ -71,6 +71,52 @@ class QueryBuilder:
         sql = self._construct_final_sql()
 
         return sql, self.params
+
+    def get_chart_suggestion(self) -> str:
+        """
+        Implementa a heurística para sugerir o melhor tipo de gráfico
+        baseado na query solicitada (número e tipo de métricas/dimensões).
+        Retorna uma string específica para o front-end consumir.
+        """
+        num_metrics = len(self.request.metrics)
+        num_dimensions = len(self.request.dimensions)
+
+        if num_dimensions == 0:
+            return "Scorecard"
+
+        if num_dimensions == 1:
+            dim_name = self.request.dimensions[0]
+            dim_info = DIMENSIONS.get(dim_name)
+            dim_type = dim_info.get("type", "category") if dim_info else "category"
+
+            if num_metrics == 1:
+                if dim_type == "time":
+                    return "LineChart"
+                if dim_type == "geographic":
+                    return "MapChart"
+                if dim_type == "category":
+                    return "PieChart"
+
+            if num_metrics > 1:
+                if dim_type == "time":
+                    if num_metrics == 2:
+                        return "BiaxialLineChart"
+                    else:
+                        return "MultiLineChart"
+                if dim_type == "category":
+                    return "GroupedBarChart"
+
+        if num_dimensions >= 2:
+            dim_types = set()
+            for dim_name in self.request.dimensions:
+                dim_info = DIMENSIONS.get(dim_name)
+                if dim_info:
+                    dim_types.add(dim_info.get("type", "category"))
+
+            if num_metrics == 1 and "time" in dim_types and "category" in dim_types:
+                return "MultiLineChart"
+
+        return "Table"
 
     def _collect_fields_and_joins(self):
         """

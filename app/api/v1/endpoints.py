@@ -28,7 +28,7 @@ async def get_definitions():
 
 
 async def _execute_query_logic(
-    request: QueryRequest, 
+    request: QueryRequest,
     conn: asyncpg.Connection,
 ) -> QueryResponse:
     """
@@ -39,6 +39,8 @@ async def _execute_query_logic(
     try:
         builder = QueryBuilder(request)
         sql, params = builder.build()
+
+        chart_suggestion = builder.get_chart_suggestion()
 
         logging.debug(f"SQL Gerado: {sql}")
         logging.debug(f"Parâmetros: {params}")
@@ -54,6 +56,7 @@ async def _execute_query_logic(
             query_sql=sql,
             data=data,
             execution_time_ms=duration_ms,
+            chart_suggestion=chart_suggestion,
         )
 
         return response_obj
