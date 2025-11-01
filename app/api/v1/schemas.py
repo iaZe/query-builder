@@ -89,13 +89,21 @@ class QueryRequest(BaseModel):
     @field_validator("metrics")
     def metrics_must_not_be_empty(cls, v):
         return v
+    
+class DataRow(BaseModel):
+    """
+    Representa uma única linha de resultado, com métricas e dimensões
+    separadas para facilitar o consumo do front-end.
+    """
+    metrics: Dict[str, Any]
+    dimensions: Dict[str, Any]
 
 
 class QueryResponse(BaseModel):
     """Define a resposta que nossa API enviará de volta."""
 
     query_sql: str
-    data: List[Dict[str, Any]]
+    data: List[DataRow]
     execution_time_ms: float
     chart_suggestion: str
 
