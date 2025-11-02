@@ -26,6 +26,14 @@ data. Em vez disso, use a chave "dateRange" com um dos seguintes valores:
    - "last_12_months"
    - "this_year"
    Escolha o valor que mais se aproxima do pedido do usuário.
+8. Os dias da semana são transformados no modelo DATEPART do Postgres.
+    - domingo" -> 0
+    - segunda-feira" -> 1
+    - terça-feira" -> 2
+    - quarta-feira" -> 3
+    - quinta-feira" -> 4
+    - sexta-feira" -> 5
+    - sábado" -> 6
 
 ---
 CHAVES DE MÉTRICAS DISPONÍVEIS (Use a chave, não a label):
