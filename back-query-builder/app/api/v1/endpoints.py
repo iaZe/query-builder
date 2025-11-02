@@ -49,16 +49,20 @@ async def _execute_query_logic(
 
         end_time = time.perf_counter()
         duration_ms = (end_time - start_time) * 1000
-        
+
         data = []
         metric_keys = set(request.metrics)
         dimension_keys = set(request.dimensions)
 
         for record in results:
             record_dict = dict(record)
-            metrics_obj = {key: record_dict[key] for key in metric_keys if key in record_dict}
-            dimensions_obj = {key: record_dict[key] for key in dimension_keys if key in record_dict}
-            
+            metrics_obj = {
+                key: record_dict[key] for key in metric_keys if key in record_dict
+            }
+            dimensions_obj = {
+                key: record_dict[key] for key in dimension_keys if key in record_dict
+            }
+
             data.append({"metrics": metrics_obj, "dimensions": dimensions_obj})
 
         response_obj = QueryResponse(

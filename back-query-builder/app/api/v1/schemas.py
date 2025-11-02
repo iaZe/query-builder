@@ -89,12 +89,14 @@ class QueryRequest(BaseModel):
     @field_validator("metrics")
     def metrics_must_not_be_empty(cls, v):
         return v
-    
+
+
 class DataRow(BaseModel):
     """
     Representa uma única linha de resultado, com métricas e dimensões
     separadas para facilitar o consumo do front-end.
     """
+
     metrics: Dict[str, Any]
     dimensions: Dict[str, Any]
 
