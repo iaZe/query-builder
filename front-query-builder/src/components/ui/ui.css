@@ -1,0 +1,78 @@
+.dropdown-container {
+  position: relative;
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+
+.dropdown-button {
+  width: 100%;
+  padding: 8px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dropdown-button span {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-chevron {
+  transition: transform 0.2s ease;
+  color: #6b7280;
+}
+
+.dropdown-chevron.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.dropdown-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.dropdown-panel li {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.dropdown-panel li:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-panel li.selected {
+  background-color: #e9d5ff;
+  font-weight: bold;
+}
+
+.dropdown-checkbox {
+  color: #6a1b9a;
+  font-size: 16px;
+}

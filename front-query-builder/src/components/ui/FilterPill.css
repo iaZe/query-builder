@@ -1,0 +1,58 @@
+.filters-list-container {
+  padding: 0;
+}
+
+.filters-list-container p {
+  padding: 12px;
+}
+
+.filter-pills-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+}
+
+.filter-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #e9d5ff;
+  border: 1px solid #c084fc;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.filter-pill-label {
+  font-weight: 500;
+  color: #581c87;
+}
+
+.filter-pill-operator {
+  font-style: italic;
+  color: #6b7280;
+}
+
+.filter-pill-value {
+  font-weight: 500;
+  color: #374151;
+  background-color: #fff;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.filter-pill-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9333ea;
+  margin-left: auto;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.filter-pill-remove:hover {
+  color: #c026d3;
+}
