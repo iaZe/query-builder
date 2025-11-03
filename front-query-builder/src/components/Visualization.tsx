@@ -19,6 +19,7 @@ import { FaChartBar, FaChartLine, FaSync, FaChartPie } from 'react-icons/fa';
 import './Visualization.css';
 import { COLORS } from '../config/chartConstants';
 import { useChartFormatters } from '../hooks/useChartFormatters';
+import { InsightCard } from './InsightCard';
 
 const ChartTitle = ({ response, isLoading, error }: any) => {
   let chartTitle = 'Visualização';
@@ -43,7 +44,7 @@ const ChartTitle = ({ response, isLoading, error }: any) => {
 
   return (
     <div className="visualization-title">
-            <h3>{chartTitle}</h3>      <span>{chartSubtitle}</span>   {' '}
+            <h3>{chartTitle}</h3>      <span>{chartSubtitle}</span>   
     </div>
   );
 };
@@ -52,24 +53,24 @@ const GroupedBarChart = React.memo(
   ({ data, dimKey, metKeys, formatters }: any) => {
     return (
       <ResponsiveContainer width="100%" height={400}>
-               {' '}
+               
         <BarChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                   {' '}
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />   
+               
           <XAxis
             dataKey={dimKey}
             axisLine={false}
             tickLine={false}
             tickFormatter={formatters.xAxis}
           />
-                   {' '}
+                   
           <YAxis
             axisLine={false}
             tickLine={false}
             tickFormatter={formatters.yAxis}
           />
                     <Tooltip formatter={formatters.tooltip} />
-                    <Legend />         {' '}
+                    <Legend />         
           {metKeys.map((key: string, index: number) => (
             <Bar
               key={key}
@@ -79,9 +80,9 @@ const GroupedBarChart = React.memo(
               radius={[4, 4, 0, 0]}
             />
           ))}
-                 {' '}
+                 
         </BarChart>
-             {' '}
+             
       </ResponsiveContainer>
     );
   },
@@ -91,25 +92,24 @@ const SimpleLineChart = React.memo(
   ({ data, dimKey, metKey, formatters }: any) => {
     return (
       <ResponsiveContainer width="100%" height={400}>
-               {' '}
+               
         <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                   {' '}
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />   
+               
           <XAxis
             dataKey={dimKey}
             axisLine={false}
             tickLine={false}
             tickFormatter={formatters.xAxis}
           />
-                   {' '}
+                   
           <YAxis
             axisLine={false}
             tickLine={false}
             tickFormatter={formatters.yAxis}
           />
                     <Tooltip formatter={formatters.tooltip} />
-                    <Legend />
-                   {' '}
+                    <Legend />         
           <Line
             type="monotone"
             dataKey={metKey}
@@ -117,9 +117,9 @@ const SimpleLineChart = React.memo(
             name={metKey.replace(/_/g, ' ')}
             strokeWidth={2}
           />
-                 {' '}
+                 
         </LineChart>
-             {' '}
+             
       </ResponsiveContainer>
     );
   },
@@ -143,9 +143,9 @@ const SimplePieChart = React.memo(
 
     return (
       <ResponsiveContainer width="100%" height={400}>
-               {' '}
+               
         <PieChart>
-                   {' '}
+                   
           <Pie
             data={pieData}
             dataKey="value"
@@ -157,22 +157,22 @@ const SimplePieChart = React.memo(
             labelLine={true}
             label={renderCustomLabel}
           >
-                       {' '}
+                       
             {pieData.map((_entry: any, index: number) => (
               <Cell
                 key={`cell-${index}`}
                 fill={COLORS[index % COLORS.length]}
               />
             ))}
-                     {' '}
+                     
           </Pie>
-                   {' '}
+                   
           <Tooltip
             formatter={(value: any) => formatters.tooltip(value, metKey)}
           />
-                    <Legend />       {' '}
+                    <Legend />       
         </PieChart>
-             {' '}
+             
       </ResponsiveContainer>
     );
   },
@@ -182,24 +182,24 @@ const MultiLineChart = React.memo(
   ({ data, dimKey, metKeys, formatters }: any) => {
     return (
       <ResponsiveContainer width="100%" height={400}>
-               {' '}
+               
         <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                   {' '}
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />   
+               
           <XAxis
             dataKey={dimKey}
             axisLine={false}
             tickLine={false}
             tickFormatter={formatters.xAxis}
           />
-                   {' '}
+                   
           <YAxis
             axisLine={false}
             tickLine={false}
             tickFormatter={formatters.yAxis}
           />
                     <Tooltip formatter={formatters.tooltip} />
-                    <Legend />         {' '}
+                    <Legend />         
           {metKeys.map((key: string, index: number) => (
             <Line
               key={key}
@@ -210,9 +210,9 @@ const MultiLineChart = React.memo(
               strokeWidth={2}
             />
           ))}
-                 {' '}
+                 
         </LineChart>
-             {' '}
+             
       </ResponsiveContainer>
     );
   },
@@ -232,17 +232,17 @@ const BiaxialLineChart = React.memo(
     }
     return (
       <ResponsiveContainer width="100%" height={400}>
-               {' '}
+               
         <LineChart data={data}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                    <XAxis dataKey={dimKey} tickFormatter={formatters.xAxis} />
-                   {' '}
+                    <XAxis dataKey={dimKey} tickFormatter={formatters.xAxis} /> 
+                 
           <YAxis
             yAxisId="left"
             stroke={COLORS[0]}
             tickFormatter={formatters.yAxis}
           />
-                   {' '}
+                   
           <YAxis
             yAxisId="right"
             orientation="right"
@@ -250,8 +250,7 @@ const BiaxialLineChart = React.memo(
             tickFormatter={formatters.yAxis}
           />
                     <Tooltip formatter={formatters.tooltip} />
-                    <Legend />
-                   {' '}
+                    <Legend />         
           <Line
             yAxisId="left"
             type="monotone"
@@ -259,7 +258,7 @@ const BiaxialLineChart = React.memo(
             stroke={COLORS[0]}
             name={metKeys[0].replace(/_/g, ' ')}
           />
-                   {' '}
+                   
           <Line
             yAxisId="right"
             type="monotone"
@@ -267,9 +266,9 @@ const BiaxialLineChart = React.memo(
             stroke={COLORS[1]}
             name={metKeys[1].replace(/_/g, ' ')}
           />
-                 {' '}
+                 
         </LineChart>
-             {' '}
+             
       </ResponsiveContainer>
     );
   },
@@ -279,37 +278,37 @@ const TableView = React.memo(({ data, dimKeys, metKeys, formatters }: any) => {
   const allKeys = [...dimKeys, ...metKeys];
   return (
     <div className="viz-table-container">
-             {' '}
+             
       <table>
-                 {' '}
+                 
         <thead>
-                     {' '}
+                     
           <tr>
-                         {' '}
+                         
             {allKeys.map((k: string) => (
               <th key={k}>{k.replace(/_/g, ' ')}</th>
             ))}
-                       {' '}
+                       
           </tr>
-                   {' '}
+                   
         </thead>
-                 {' '}
+                 
         <tbody>
-                     {' '}
+                     
           {data.map((row: any, i: number) => (
             <tr key={i}>
-                             {' '}
+                             
               {allKeys.map((key: string) => (
                 <td key={`${i}-${key}`}>{formatters.table(row[key], key)}</td>
               ))}
-                           {' '}
+                           
             </tr>
           ))}
-                   {' '}
+                   
         </tbody>
-               {' '}
+               
       </table>
-           {' '}
+           
     </div>
   );
 });
@@ -317,7 +316,7 @@ const TableView = React.memo(({ data, dimKeys, metKeys, formatters }: any) => {
 const VizMessage = ({ message, isError = false }: any) => (
   <div className="viz-message-overlay">
         <p style={{ color: isError ? '#d9534f' : 'inherit' }}>{message}</p>
-     {' '}
+     
   </div>
 );
 
@@ -410,53 +409,54 @@ export function Visualization() {
 
   return (
     <div className="visualization-area">
-           {' '}
+      {response?.insights && <InsightCard insights={response.insights} />}
+           
       <div className="visualization-container">
-               {' '}
+               
         <div className="visualization-header">
-                   {' '}
+                   
           <ChartTitle response={response} isLoading={isLoading} error={error} />
-                   {' '}
+                   
           <div className="visualization-controls">
-                       {' '}
+                       
             <button
               className={`viz-control-button ${
                 activeChart.includes('Line') ? 'active' : ''
               }`}
               onClick={() => setActiveChart('LineChart')}
             >
-                            <FaChartLine />           {' '}
+                            <FaChartLine />           
             </button>
-                       {' '}
+                       
             <button
               className={`viz-control-button ${
                 activeChart.includes('Bar') ? 'active' : ''
               }`}
               onClick={() => setActiveChart('BarChart')}
             >
-                          <FaChartBar />           {' '}
+                          <FaChartBar />           
             </button>
-                   {' '}
+                   
             <button
               className={`viz-control-button ${
                 activeChart === 'PieChart' ? 'active' : ''
               }`}
               onClick={() => setActiveChart('PieChart')}
             >
-                        <FaChartPie />     {' '}
+                        <FaChartPie />     
             </button>
-             {' '}
+             
             <button className="viz-control-button">
-                    <FaSync /> {' '}
+                    <FaSync /> 
             </button>
-             {' '}
+             
           </div>
-           {' '}
+           
         </div>
             <div className="visualization-body">{renderChartContent()}</div>
-         {' '}
+         
       </div>
-       {' '}
+       
     </div>
   );
 }

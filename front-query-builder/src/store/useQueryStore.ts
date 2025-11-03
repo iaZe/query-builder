@@ -36,6 +36,7 @@ export interface ApiResponse {
   data: ApiDataRow[];
   execution_time_ms: number;
   chart_suggestion: string;
+  insights: string[] | null;
 }
 
 interface QueryState {
