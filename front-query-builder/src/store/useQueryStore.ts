@@ -19,6 +19,8 @@ export interface JsonQuery {
   metrics: string[];
   dimensions: string[];
   period: string;
+  customStartDate?: string;
+  customEndDate?: string;
   filters: Array<{ field: string; operator: string; value: string | null }>;
   order_by: { field: string; direction: 'asc' | 'desc' };
   limit: number;
@@ -37,130 +39,146 @@ export interface ApiResponse {
 }
 
 interface QueryState {
- query: JsonQuery;
- 
- isFilterModalOpen: boolean;
- aiPrompt: string;
- 
- definitions: Definitions;
- isDefinitionsLoading: boolean;
- definitionsError: string | null;
+  query: JsonQuery;
 
- response: ApiResponse | null;
- isLoading: boolean;
- error: string | null;
+  isFilterModalOpen: boolean;
+  aiPrompt: string;
 
- setMetrics: (metrics: string[]) => void;
- setDimensions: (dimensions: string[]) => void;
- setPeriod: (period: string) => void;
- setOrderBy: (orderBy: JsonQuery['order_by']) => void;
- setLimit: (limit: number) => void;
- addFilter: (filter: JsonQuery['filters'][0]) => void;
- removeFilter: (index: number) => void;
- openFilterModal: () => void;
- closeFilterModal: () => void;
- setAiPrompt: (prompt: string) => void;
- 
- fetchDefinitions: () => Promise<void>;
- fetchVisualization: () => Promise<void>;
- fetchAiQuery: (promptOverride?: string) => Promise<void>;
+  definitions: Definitions;
+  isDefinitionsLoading: boolean;
+  definitionsError: string | null;
+
+  response: ApiResponse | null;
+  isLoading: boolean;
+  error: string | null;
+
+  setMetrics: (metrics: string[]) => void;
+  setDimensions: (dimensions: string[]) => void;
+  setPeriod: (period: string) => void;
+  setCustomDateRange: (dates: { startDate: string; endDate: string }) => void;
+  setOrderBy: (orderBy: JsonQuery['order_by']) => void;
+  setLimit: (limit: number) => void;
+  addFilter: (filter: JsonQuery['filters'][0]) => void;
+  removeFilter: (index: number) => void;
+  openFilterModal: () => void;
+  closeFilterModal: () => void;
+  setAiPrompt: (prompt: string) => void;
+
+  fetchDefinitions: () => Promise<void>;
+  fetchVisualization: () => Promise<void>;
+  fetchAiQuery: (promptOverride?: string) => Promise<void>;
 }
 
-
 export const useQueryStore = create<QueryState>((set, get) => ({
- query: DEFAULT_QUERY,
- isFilterModalOpen: false,
- aiPrompt: '',
- definitions: EMPTY_DEFINITIONS,
- isDefinitionsLoading: false,
- definitionsError: null,
- response: null,
- isLoading: false,
- error: null,
+  query: DEFAULT_QUERY,
+  isFilterModalOpen: false,
+  aiPrompt: '',
+  definitions: EMPTY_DEFINITIONS,
+  isDefinitionsLoading: false,
+  definitionsError: null,
+  response: null,
+  isLoading: false,
+  error: null,
 
- setMetrics: (metrics) => set((state) => {
-  const newOrderByField = metrics.includes(state.query.order_by.field) 
-   ? state.query.order_by.field 
-   : metrics[0] || '';
-  return {
-   query: { 
-    ...state.query, 
-    metrics,
-    order_by: { ...state.query.order_by, field: newOrderByField }
-   } 
-  };
- }),
- 
- setDimensions: (dimensions) => set((state) => ({ 
-  query: { ...state.query, dimensions } 
- })),
+  setMetrics: (metrics) =>
+    set((state) => {
+      const newOrderByField = metrics.includes(state.query.order_by.field)
+        ? state.query.order_by.field
+        : metrics[0] || '';
+      return {
+        query: {
+          ...state.query,
+          metrics,
+          order_by: { ...state.query.order_by, field: newOrderByField },
+        },
+      };
+    }),
 
- setPeriod: (period) => set((state) => ({
-  query: { ...state.query, period }
- })),
+  setDimensions: (dimensions) =>
+    set((state) => ({
+      query: { ...state.query, dimensions },
+    })),
 
- setOrderBy: (orderBy) => set((state) => ({
-  query: { ...state.query, order_by: orderBy }
- })),
+  setPeriod: (period) =>
+    set((state) => ({
+      query: { ...state.query, period },
+    })),
 
- setLimit: (limit) => set((state) => ({ 
-  query: { ...state.query, limit: Math.min(Math.max(limit, 1), 100000) }
- })),
+  setCustomDateRange: (dates) =>
+    set((state) => ({
+      query: {
+        ...state.query,
+        customStartDate: dates.startDate,
+        customEndDate: dates.endDate,
+      },
+    })),
 
- addFilter: (filter) => set((state) => ({
-  query: { ...state.query, filters: [...state.query.filters, filter] }
- })),
+  setOrderBy: (orderBy) =>
+    set((state) => ({
+      query: { ...state.query, order_by: orderBy },
+    })),
 
- removeFilter: (index) => set((state) => ({
-  query: { 
-   ...state.query, 
-   filters: state.query.filters.filter((_, i) => i !== index) 
-  }
- })),
+  setLimit: (limit) =>
+    set((state) => ({
+      query: { ...state.query, limit: Math.min(Math.max(limit, 1), 100000) },
+    })),
 
- openFilterModal: () => set({ isFilterModalOpen: true }),
- closeFilterModal: () => set({ isFilterModalOpen: false }),
- 
- setAiPrompt: (prompt) => set({ aiPrompt: prompt }),
+  addFilter: (filter) =>
+    set((state) => ({
+      query: { ...state.query, filters: [...state.query.filters, filter] },
+    })),
 
- fetchDefinitions: async () => {
-  set({ isDefinitionsLoading: true, definitionsError: null });
-  try {
-   const data = await apiService.fetchDefinitions();
-   set({ definitions: data, isDefinitionsLoading: false });
-  } catch (err) {
-   set({ 
-    isDefinitionsLoading: false, 
-    definitionsError: getErrorMessage(err) 
-   });
-  }
- },
+  removeFilter: (index) =>
+    set((state) => ({
+      query: {
+        ...state.query,
+        filters: state.query.filters.filter((_, i) => i !== index),
+      },
+    })),
 
- fetchVisualization: async () => {
-  set({ isLoading: true, error: null, response: null });
-  try {
-   const currentQuery = get().query;
-   const data = await apiService.fetchVisualization(currentQuery);
-   set({ isLoading: false, response: data });
-  } catch (err) {
-   set({ isLoading: false, error: getErrorMessage(err) });
-  }
- },
+  openFilterModal: () => set({ isFilterModalOpen: true }),
+  closeFilterModal: () => set({ isFilterModalOpen: false }),
 
-fetchAiQuery: async (promptOverride?: string) => {
-    const prompt = promptOverride ?? get().aiPrompt;
-    if (!prompt) return;
+  setAiPrompt: (prompt) => set({ aiPrompt: prompt }),
 
-    if (promptOverride) {
-      set({ aiPrompt: promptOverride });
-    }
+  fetchDefinitions: async () => {
+    set({ isDefinitionsLoading: true, definitionsError: null });
+    try {
+      const data = await apiService.fetchDefinitions();
+      set({ definitions: data, isDefinitionsLoading: false });
+    } catch (err) {
+      set({
+        isDefinitionsLoading: false,
+        definitionsError: getErrorMessage(err),
+      });
+    }
+  },
 
-    set({ isLoading: true, error: null, response: null });
-    try {
-      const data = await apiService.fetchAiQuery(prompt);
-      set({ isLoading: false, response: data });
-    } catch (err) {
-      set({ isLoading: false, error: getErrorMessage(err) });
-    }
-  },
+  fetchVisualization: async () => {
+    set({ isLoading: true, error: null, response: null });
+    try {
+      const currentQuery = get().query;
+      const data = await apiService.fetchVisualization(currentQuery);
+      set({ isLoading: false, response: data });
+    } catch (err) {
+      set({ isLoading: false, error: getErrorMessage(err) });
+    }
+  },
+
+  fetchAiQuery: async (promptOverride?: string) => {
+    const prompt = promptOverride ?? get().aiPrompt;
+    if (!prompt) return;
+
+    if (promptOverride) {
+      set({ aiPrompt: promptOverride });
+    }
+
+    set({ isLoading: true, error: null, response: null });
+    try {
+      const data = await apiService.fetchAiQuery(prompt);
+      set({ isLoading: false, response: data });
+    } catch (err) {
+      set({ isLoading: false, error: getErrorMessage(err) });
+    }
+  },
 }));
