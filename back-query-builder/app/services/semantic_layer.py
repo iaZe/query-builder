@@ -198,6 +198,33 @@ METRICS = {
         "joins_needed": ["delivery_sales"],
         "type": "currency",
     },
+    "ticket_medio_robusto": {
+        "sql": "SUM(sales.total_amount) / NULLIF(COUNT(DISTINCT sales.id), 0)",
+        "label": "Ticket Médio (Calculado)",
+        "type": "currency",
+    },
+    "percentual_desconto": {
+        "sql": "(SUM(sales.total_discount) / NULLIF(SUM(sales.total_amount_items), 0)) * 100.0",
+        "label": "% Desconto (sobre o Bruto)",
+        "type": "percentage",
+    },
+    "percentual_taxa_entrega": {
+        "sql": "(SUM(sales.delivery_fee) / NULLIF(SUM(sales.total_amount), 0)) * 100.0",
+        "label": "% Taxa de Entrega (sobre o Líquido)",
+        "type": "percentage",
+    },
+    "valor_por_cliente": {
+        "sql": "SUM(sales.total_amount) / NULLIF(COUNT(DISTINCT sales.customer_id), 0)",
+        "label": "Valor por Cliente (LTV Simplificado)",
+        "joins_needed": [],
+        "type": "currency",
+    },
+    "pedidos_por_cliente": {
+        "sql": "CAST(COUNT(DISTINCT sales.id) AS FLOAT) / NULLIF(COUNT(DISTINCT sales.customer_id), 0)",
+        "label": "Pedidos por Cliente (Frequência)",
+        "joins_needed": [],
+        "type": "number",
+    },
 }
 
 

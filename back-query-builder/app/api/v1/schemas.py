@@ -138,6 +138,10 @@ class QueryResponse(BaseModel):
     data: List[DataRow]
     execution_time_ms: float
     chart_suggestion: str
+    insights: List[str] = Field(
+        [], 
+        description="Uma lista de insights textuais gerados a partir dos dados."
+    )
 
 
 class DefinitionItem(BaseModel):

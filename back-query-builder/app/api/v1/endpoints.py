@@ -13,6 +13,8 @@ from app.services.query_engine import QueryBuilder
 from app.services.semantic_layer import METRICS, DIMENSIONS
 from app.core.database import get_db_connection
 
+from app.services.insight_generator import InsightGenerator
+
 
 router = APIRouter(prefix="/v1", tags=["Query Engine"])
 
@@ -65,11 +67,27 @@ async def _execute_query_logic(
 
             data.append({"metrics": metrics_obj, "dimensions": dimensions_obj})
 
+        try: 
+            insight_generator = InsightGenerator(request, QueryResponse(
+                query_sql=sql,
+                data=data,
+                execution_time_ms=duration_ms,
+                chart_suggestion=chart_suggestion,
+            ))
+            insights = []
+            insight_text = insight_generator.generate_text()
+            if insight_text:
+                insights.append(insight_text)
+        except Exception as e:
+            logging.error(f"Erro ao gerar insights: {e}")
+            insights = []
+
         response_obj = QueryResponse(
             query_sql=sql,
             data=data,
             execution_time_ms=duration_ms,
             chart_suggestion=chart_suggestion,
+            insights=insights,
         )
 
         return response_obj
