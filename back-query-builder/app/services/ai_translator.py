@@ -75,12 +75,12 @@ Usuário: "total de vendas de 03/09/2025 a 03/11/2025"
 JSON:
 {{
   "metrics": ["total_vendas"],
-  "customDateRange": {
+  "customDateRange": {{
     "start_date": "2025-09-03",
     "end_date": "2025-11-03"
-  },
+  }},
   "order_by": [
-    {"field": "total_vendas", "direction": "desc"}
+    {{"field": "total_vendas", "direction": "desc"}}
   ],
   "limit": 3
 }}
