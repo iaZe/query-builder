@@ -1,32 +1,50 @@
 import datetime
 from dateutil.relativedelta import relativedelta
-from typing import List, Set, Any, Tuple, Dict
-from app.api.v1.schemas import QueryRequest, FilterOperator, OrderBy
+from typing import List, Optional, Set, Any, Tuple, Dict
+from app.api.v1.schemas import QueryRequest, FilterOperator, OrderBy, CustomDateRange
 from app.services.semantic_layer import METRICS, DIMENSIONS, JOIN_PATHS
 
 
-def _get_date_range_filter(date_range_key: str) -> Tuple[str, List[Any]]:
+def _build_date_filter(
+    date_range_key: Optional[str], custom_range: Optional[CustomDateRange]
+) -> Tuple[Optional[str], List[Any]]:
     """
-    Traduz o string do seletor de período em um filtro SQL real.
+    Traduz o seletor de período (preset ou custom) em um filtro SQL para a
+    coluna 'sales.created_at'.
+
+    Retorna uma tupla (sql_clause, params).
     """
     today = datetime.date.today()
     start_date = None
+    end_date = today
 
-    if date_range_key == "last_7_days":
-        start_date = today - datetime.timedelta(days=6)
-    elif date_range_key == "last_30_days":
-        start_date = today - datetime.timedelta(days=29)
-    elif date_range_key == "last_6_months":
-        start_date = today - relativedelta(months=6)
-    elif date_range_key == "last_12_months":
-        start_date = today - relativedelta(months=12)
-    elif date_range_key == "this_year":
-        start_date = today.replace(month=1, day=1)
+    if custom_range:
+        start_date = custom_range.start_date
+        end_date = custom_range.end_date
 
-    if start_date:
-        return "sales.created_at >= %s", [start_date]
+    elif date_range_key:
+        if date_range_key == "last_7_days":
+            start_date = today - datetime.timedelta(days=6)
+        elif date_range_key == "last_30_days":
+            start_date = today - datetime.timedelta(days=29)
+        elif date_range_key == "last_6_months":
+            start_date = today - relativedelta(months=6)
+        elif date_range_key == "last_12_months":
+            start_date = today - relativedelta(months=12)
+        elif date_range_key == "this_year":
+            start_date = today.replace(month=1, day=1)
+        else:
+            return None, []
 
-    return None, []
+    else:
+        return None, []
+
+    end_date_exclusive = end_date + datetime.timedelta(days=1)
+
+    return "sales.created_at >= %s AND sales.created_at < %s", [
+        start_date,
+        end_date_exclusive,
+    ]
 
 
 class QueryBuilder:
@@ -195,12 +213,23 @@ class QueryBuilder:
         """
         Constrói a cláusula WHERE com base nos filtros.
         """
-        if self.request.dateRange:
-            sql_fragment, params = _get_date_range_filter(self.request.dateRange)
-            if sql_fragment:
-                placeholder = self._get_next_placeholder()
-                self.where_clause.append(sql_fragment.replace("%s", placeholder))
-                self.params.extend(params)
+
+        sql_date_fragment, date_params = _build_date_filter(
+            self.request.dateRange, self.request.customDateRange
+        )
+
+        if sql_date_fragment:
+
+            if date_params:
+                placeholder1 = self._get_next_placeholder()
+                sql_date_fragment = sql_date_fragment.replace("%s", placeholder1, 1)
+
+                if len(date_params) > 1:
+                    placeholder2 = self._get_next_placeholder()
+                    sql_date_fragment = sql_date_fragment.replace("%s", placeholder2, 1)
+
+            self.where_clause.append(sql_date_fragment)
+            self.params.extend(date_params)
 
         for f in self.request.filters:
             field_sql = self.field_map[f.field]

@@ -1,4 +1,5 @@
-from pydantic import BaseModel, field_validator, Field
+import datetime
+from pydantic import BaseModel, field_validator, root_validator, Field
 from typing import List, Dict, Any, Optional
 from enum import Enum
 
@@ -59,6 +60,21 @@ class OrderBy(BaseModel):
     direction: SortDirection = SortDirection.ASC
 
 
+class CustomDateRange(BaseModel):
+    """Define um período de data customizado."""
+
+    start_date: datetime.date
+    end_date: datetime.date
+
+    @field_validator("end_date")
+    def end_date_must_be_after_start_date(cls, v, values):
+        if "start_date" in values.data and v < values.data["start_date"]:
+            raise ValueError(
+                "A data final ('end_date') deve ser posterior à data inicial ('start_date')."
+            )
+        return v
+
+
 class QueryRequest(BaseModel):
     """O corpo da requisição de query."""
 
@@ -84,11 +100,25 @@ class QueryRequest(BaseModel):
         le=100_000,  # le = Less than or Equal to
         description="Limite de linhas. Padrão 1000. Máximo 100.000.",
     )
-    dateRange: Optional[str] = None
+    dateRange: Optional[str] = Field(
+        None, description="Preset de período (ex: 'last_7_days')"
+    )
+    customDateRange: Optional[CustomDateRange] = Field(
+        None, description="Período customizado com data inicial e final"
+    )
 
     @field_validator("metrics")
     def metrics_must_not_be_empty(cls, v):
         return v
+
+    @root_validator(skip_on_failure=True)
+    def check_date_range_conflict(cls, values):
+        """Valida que apenas um tipo de filtro de data foi enviado."""
+        if values.get("dateRange") and values.get("customDateRange"):
+            raise ValueError(
+                "Forneça apenas 'dateRange' (preset) ou 'customDateRange', não ambos."
+            )
+        return values
 
 
 class DataRow(BaseModel):
