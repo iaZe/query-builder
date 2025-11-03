@@ -27,68 +27,70 @@ Esta plataforma devolve o poder de exploração à Maria através de duas peças
 O sistema é dividido em dois módulos principais. O diagrama abaixo mostra como eles se comunicam:
 
 ```mermaid
-graph TD
-    subgraph "Usuário (Maria)"
-        U_IA[Pergunta em Linguagem Natural]
-  	  U_UI[UI de Analytics Front-end]
-    end
+flowchart TD
+ subgraph subGraph0["Usuário (Maria)"]
+        U_IA["Pergunta em Linguagem Natural"]
+        U_UI["UI de Analytics Front-end"]
+  end
+ subgraph subGraph1["Caminho A (IA)"]
+        EP_IA("POST /api/v1/query-from-text")
+        AIT["AI Translator ai_translator.py"]
+  end
+ subgraph subGraph2["Caminho B (JSON)"]
+        EP_JSON("POST /api/v1/query")
+  end
+ subgraph subGraph3["Motor Central (Reutilizável)"]
+        LOGIC["_execute_query_logic"]
+        QB["Query Builder query_engine.py"]
+        SEM["Camada Semântica semantic_layer.py"]
+        JSON_OUT["Resultado JSON"]
+  end
+ subgraph subGraph4["Descoberta (UI)"]
+        EP_DEF("GET /api/v1/definitions")
+  end
+ subgraph subGraph5["Servidor API (FastAPI)"]
+        subGraph1
+        subGraph2
+        subGraph3
+        subGraph4
+        DB[("PostgreSQL")]
+  end
+ subgraph subGraph6["Serviços Externos"]
+        MARITACA["Maritaca AI"]
+  end
+    EP_IA --> AIT
+    LOGIC --> QB & JSON_OUT
+    QB --> SEM & DB
+    SEM --> JSON_OUT
+    EP_DEF --> SEM
+    DB --> LOGIC
+    U_IA --> EP_IA
+    AIT --> MARITACA
+    MARITACA --> AIT
+    AIT -- JSON Gerado --> LOGIC
+    U_UI --> EP_JSON
+    EP_JSON -- JSON Manual --> LOGIC
+    U_UI -- (Ao carregar) --> EP_DEF
 
-    subgraph "Servidor API (FastAPI)"
-        subgraph "Caminho A (IA)"
-        	  EP_IA(POST /api/v1/query-from-text)
-        	  AIT[AI Translator ai_translator.py]
-        	  EP_IA --> AIT
-        end
-    	
-    	  subgraph "Caminho B (JSON)"
-        	  EP_JSON(POST /api/v1/query)
-    	  end
-
-    	  subgraph "Motor Central (Reutilizável)"
-        	  LOGIC[_execute_query_logic]
-        	  QB[Query Builder query_engine.py]
-        	  SEM[Camada Semântica semantic_layer.py]
-        	  
-        	  LOGIC -->  QB
-        	  QB --> SEM --> JSON_OUT
-    	  end
-
-    	  subgraph "Descoberta (UI)"
-        	  EP_DEF(GET /api/v1/definitions)
-        	  EP_DEF --> SEM
-    	  end
-
-    	  JSON_OUT[Resultado JSON]
-  	  QB --> DB[(PostgreSQL)]
-  	  DB --> LOGIC
-  	  LOGIC --> JSON_OUT
-    end
-
-    subgraph "Serviços Externos"
-    	  MARITACA[Maritaca AI]
-    end
-
-    %% Definição dos Fluxos
-    U_IA --> EP_IA
-    AIT --> MARITACA
-    MARITACA --> AIT
-    AIT -- JSON Gerado --> LOGIC
-    
-    U_UI --> EP_JSON
-    EP_JSON -- JSON Manual --> LOGIC
-    
-    U_UI -- (Ao carregar) --> EP_DEF
-
-    %% Estilos
-    classDef endpoint fill:#f9f,stroke:#333,stroke-width:2px
-    classDef logic fill:#ccf,stroke:#333
-    classDef external fill:#f96
-    classDef db fill:#9f9
-    
-    class EP_IA,EP_JSON,EP_DEF endpoint
-    class QB,AIT,SEM,LOGIC logic
-    class MARITACA external
-    class DB,CACHE db
+     EP_IA:::endpoint
+     AIT:::logic
+     EP_JSON:::endpoint
+     LOGIC:::logic
+     QB:::logic
+     SEM:::logic
+     EP_DEF:::endpoint
+     DB:::db
+     MARITACA:::external
+    classDef endpoint fill:#f9f,stroke:#333,stroke-width:2px
+    classDef logic fill:#ccf,stroke:#333
+    classDef external fill:#f96
+    classDef db fill:#9f9
+    classDef default fill:#777,stroke:#ccc,color:#fff
+    style U_IA stroke:#000000,fill:#FFD600
+    style U_UI fill:#FFD600,stroke:#000000
+    style QB color:#FFFFFF
+    style SEM color:#FFFFFF
+    style JSON_OUT fill:#BBDEFB,stroke:#000000
 ```
 
 ### 📁 1. O Motor (back-query-builder/)
