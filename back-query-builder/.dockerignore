@@ -1,0 +1,8 @@
+venv/
+ven/
+__pycache__/
+*.pyc
+.dockerignore
+.git
+.gitignore
+.vscode/

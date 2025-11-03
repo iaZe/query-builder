@@ -3,3 +3,4 @@ uvicorn[standard]
 pydantic-settings
 asyncpg
 httpx
+python-dateutil
