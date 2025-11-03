@@ -134,7 +134,8 @@ O back-end recebe esse "pedido", usa o `QueryBuilder` para traduzi-lo em SQL oti
     },
     ...
   ],
-  "execution_time_ms": 137.45650299824774
+  "execution_time_ms": 137.45650299824774,
+	"chart_suggestion": "PieChart"
 }
 ```
 
@@ -143,6 +144,7 @@ A resposta é desenhada para ser completa:
   * **`query_sql`**: Fornece transparência total e facilita o debug.
   * **`data`**: A "resposta" em si, formatada em JSON.
   * **`execution_time_ms`**: O "selo de performance", provando o cumprimento do RNF.
+  * **`chart_suggestion`**: Uma dica opcional para o front-end sobre como visualizar os dados (ex: gráfico de pizza, barras, etc.).
 
 #### 2.3. Decisões de Engenharia (Os "Porquês" e os "Trade-offs")
 
@@ -289,7 +291,8 @@ Aqui detalhamos o contrato técnico de cada endpoint disponível no backend.
           "produto_nome": "Cerveja G #081"
         }
       ],
-      "execution_time_ms": 122.39968499488896
+      "execution_time_ms": 122.39968499488896,
+	    "chart_suggestion": "PieChart"
     }
     ```
 
@@ -321,6 +324,7 @@ Aqui detalhamos o contrato técnico de cada endpoint disponível no backend.
           "produto_nome": "Cerveja G #081"
         }
       ],
-      "execution_time_ms": 122.39968499488896
+      "execution_time_ms": 122.39968499488896,
+	    "chart_suggestion": "PieChart"
     }
     ```

@@ -314,7 +314,8 @@ O front-end usa este endpoint para saber o que pode pedir.
   "order_by": [
     {"field": "total_vendas", "direction": "desc"}
   ],
-  "limit": 10
+  "limit": 10,
+  "chart_suggestion": "PieChart"
 }
 ```
 
@@ -342,53 +343,7 @@ O front-end usa este endpoint para saber o que pode pedir.
     },
     ...
   ],
-  "execution_time_ms": 122.39
+  "execution_time_ms": 122.39,
+  "chart_suggestion": "PieChart"
 }
 ```
-
-### 2\. Executar uma Query (via JSON)
-
-`POST /api/v1/query`
-
-**Request Body:**
-
-```json
-{
-  "metrics": ["total_vendas"],
-  "dimensions": ["produto_nome"],
-  "filters": [
-    {"field": "canal_nome", "operator": "eq", "value": "iFood"}
-  ],
-  "order_by": [
-    {"field": "total_vendas", "direction": "desc"}
-  ],
-  "limit": 10
-}
-```
-
-### 3\. Executar uma Query (via IA)
-
-`POST /api/v1/query-from-text`
-
-**Request Body:**
-
-```json
-{
-  "prompt": "Quais os 3 produtos mais vendidos no iFood?"
-}
-```
-
-**Response (para ambas as queries):**
-
-```json
-{
-  "query_sql": "SELECT SUM(sales.total_amount) AS \"total_vendas\", ...",
-  "data": [
-    {
-      "total_vendas": "1092962.80",
-      "produto_nome": "Combo Duplo M #014"
-    },
-    ...
-  ],
-  "execution_time_ms": 122.39
-}
