@@ -31,40 +31,44 @@ export function AddFilterModal() {
     const metrics = Object.entries(definitions.metrics).map(([key, val]) => ({
       value: key,
       label: val.label,
-      type: val.type || 'number'
+      type: val.type || 'number',
     }));
-    const dimensions = Object.entries(definitions.dimensions).map(([key, val]) => ({
-      value: key,
-      label: val.label,
-      type: val.type || 'string'
-    }));
+    const dimensions = Object.entries(definitions.dimensions).map(
+      ([key, val]) => ({
+        value: key,
+        label: val.label,
+        type: val.type || 'string',
+      }),
+    );
     return [...metrics, ...dimensions];
   }, [definitions]);
 
   const selectedFieldType = useMemo(() => {
-    const selected = fieldOptions.find(f => f.value === field);
+    const selected = fieldOptions.find((f) => f.value === field);
     if (!selected) return 'string';
-    if (selected.type === 'currency' || selected.type === 'number') return 'number';
+    if (selected.type === 'currency' || selected.type === 'number')
+      return 'number';
     if (selected.type === 'date' || selected.type === 'datetime') return 'date';
     return 'string';
   }, [field, fieldOptions]);
 
-  const operatorOptions = selectedFieldType === 'number' ? NUMERIC_OPERATORS : STRING_OPERATORS;
-  
+  const operatorOptions =
+    selectedFieldType === 'number' ? NUMERIC_OPERATORS : STRING_OPERATORS;
+
   const inputType = selectedFieldType === 'number' ? 'number' : 'text';
-  
+
   const isValueHidden = operator === 'is_null' || operator === 'is_not_null';
 
   const handleFieldChange = (newField: string) => {
     setField(newField);
     setOperator('');
   };
-  
+
   const handleSave = () => {
     if (!field || !operator) return;
-    
+
     const filterValue = isValueHidden ? null : value;
-    
+
     addFilter({ field, operator, value: String(filterValue) });
     closeFilterModal();
   };
@@ -111,11 +115,14 @@ export function AddFilterModal() {
           )}
         </div>
         <div className="modal-footer">
-          <button className="button-secondary" onClick={closeFilterModal}>Cancelar</button>
-          <button className="button-primary" onClick={handleSave}>Salvar Filtro</button>
+          <button className="button-secondary" onClick={closeFilterModal}>
+            Cancelar
+          </button>
+          <button className="button-primary" onClick={handleSave}>
+            Salvar Filtro
+          </button>
         </div>
       </div>
     </div>
   );
 }
-

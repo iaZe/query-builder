@@ -1,8 +1,8 @@
 export const mapDefinitionsToOptions = (
-  definitions: Record<string, { label: string }>
+  definitions: Record<string, { label: string }>,
 ) => {
-  return Object.entries(definitions).map(([key, value]) => ({
-    value: key,
-    label: value.label,
-  }));
+  return Object.entries(definitions).map(([key, value]) => ({
+    value: key,
+    label: value.label,
+  }));
 };

@@ -2,42 +2,39 @@ import { useEffect, useRef } from 'react';
 
 type HandledEvents = 'mousedown' | 'touchstart';
 
-export function useClickOutside<T extends HTMLElement>(
- callback: () => void
-) {
- const ref = useRef<T>(null);
- 
- const latestCallbackRef = useRef(callback);
+export function useClickOutside<T extends HTMLElement>(callback: () => void) {
+  const ref = useRef<T>(null);
 
- useEffect(() => {
-  latestCallbackRef.current = callback;
- }, [callback]);
+  const latestCallbackRef = useRef(callback);
 
- useEffect(() => {
-  function handleClick(event: MouseEvent | TouchEvent) {
-   const target = event.target as Node;
-   if (!target) {
-    return;
-   }
+  useEffect(() => {
+    latestCallbackRef.current = callback;
+  }, [callback]);
 
-   if (ref.current && !ref.current.contains(target)) {
-    latestCallbackRef.current();
-   }
-  }
-  
-  const events: HandledEvents[] = ['mousedown', 'touchstart'];
-  
-  events.forEach((event) => {
-   document.addEventListener(event, handleClick);
-  });
-  
-  return () => {
-   events.forEach((event) => {
-    document.removeEventListener(event, handleClick);
-   });
-  };
+  useEffect(() => {
+    function handleClick(event: MouseEvent | TouchEvent) {
+      const target = event.target as Node;
+      if (!target) {
+        return;
+      }
 
- }, [ref]);
+      if (ref.current && !ref.current.contains(target)) {
+        latestCallbackRef.current();
+      }
+    }
 
- return ref;
+    const events: HandledEvents[] = ['mousedown', 'touchstart'];
+
+    events.forEach((event) => {
+      document.addEventListener(event, handleClick);
+    });
+
+    return () => {
+      events.forEach((event) => {
+        document.removeEventListener(event, handleClick);
+      });
+    };
+  }, [ref]);
+
+  return ref;
 }
