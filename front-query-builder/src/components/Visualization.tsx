@@ -150,7 +150,7 @@ const SimplePieChart = React.memo(
             labelLine={true}
             label={renderCustomLabel}
           >
-            {pieData.map((entry: any, index: number) => (
+            {pieData.map((_entry: any, index: number) => (
               <Cell
                 key={`cell-${index}`}
                 fill={COLORS[index % COLORS.length]}
