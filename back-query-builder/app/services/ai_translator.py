@@ -34,7 +34,8 @@ data. Em vez disso, use a chave "dateRange" com um dos seguintes valores:
     - quinta-feira" -> 4
     - sexta-feira" -> 5
     - sábado" -> 6
-
+9. Se o usuário pedir um intervalo de datas específico (ex: "de 01/01/2023 a 31/01/2023"), crie
+   filtros de data usando o formato "YYYY-MM-DD".
 ---
 CHAVES DE MÉTRICAS DISPONÍVEIS (Use a chave, não a label):
 {json.dumps(SIMPLE_METRICS, indent=2, ensure_ascii=False)}
@@ -59,7 +60,7 @@ JSON:
   "limit": 3
 }}
 
-Usuário: "vendas nos últimos 2 meses"
+Usuário: "vendas nos últimos 6 meses"
 JSON:
 {{
   "metrics": ["total_vendas"],
@@ -68,6 +69,20 @@ JSON:
   "dateRange": "last_6_months",
   "order_by": [],
   "limit": 100
+}}
+
+Usuário: "total de vendas de 03/09/2025 a 03/11/2025"
+JSON:
+{{
+  "metrics": ["total_vendas"],
+  "customDateRange": {
+    "start_date": "2025-09-03",
+    "end_date": "2025-11-03"
+  },
+  "order_by": [
+    {"field": "total_vendas", "direction": "desc"}
+  ],
+  "limit": 3
 }}
 
 Usuário: "Qual o ticket médio por método de pagamento, apenas para pedidos cancelados?"
