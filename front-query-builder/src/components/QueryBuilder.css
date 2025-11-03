@@ -1,158 +1,158 @@
 .query-builder-sidebar {
-  background-color: #ffffffb3;
-  padding: 24px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+ background-color: #ffffffb3;
+ padding: 24px;
+ overflow-y: auto;
+ display: flex;
+ flex-direction: column;
+ gap: 16px;
 }
 
 .query-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
 }
 
 .query-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #1d293d;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+ font-size: 14px;
+ font-weight: 500;
+ color: #1d293d;
+ display: flex;
+ align-items: center;
+ gap: 6px;
 }
 
 .icon-wrapper {
-  width: 26px;
-  height: 26px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  flex-shrink: 0;
+ width: 26px;
+ height: 26px;
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ color: #fff;
+ flex-shrink: 0;
 }
 
 .icon-wrapper.icon-metrics {
-  background-color: #3b82f6;
+ background-color: #3b82f6;
 }
 .icon-wrapper.icon-dimensions {
-  background-color: #a855f7;
+ background-color: #a855f7;
 }
 .icon-wrapper.icon-period {
-  background-color: #10b981;
+ background-color: #10b981;
 }
 .icon-wrapper.icon-filters {
-  background-color: #f59e0b;
+ background-color: #f59e0b;
 }
 
 .dropdown-panel span {
-  font-size: 12px;
-  color: #000000;
+ font-size: 12px;
+ color: #000000;
 }
 
 .query-section-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 12px;
 }
 
 .query-input {
-  width: 100%;
-  padding: 10px 12px;
-  background-color: #fff;
-  border: 1px solid #d1d5db;
-  color: #000;
-  border-radius: 8px;
-  font-size: 14px;
-  box-sizing: border-box;
+ width: 100%;
+ padding: 10px 12px;
+ background-color: #fff;
+ border: 1px solid #d1d5db;
+ color: #000;
+ border-radius: 8px;
+ font-size: 14px;
+ box-sizing: border-box;
 }
 
 .query-label-filter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
 }
 
 .add-filter-button {
-  background: none;
-  border: 1px solid #d1d5db;
-  color: #1d293d;
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+ background: none;
+ border: 1px solid #d1d5db;
+ color: #1d293d;
+ border-radius: 8px;
+ padding: 6px 12px;
+ font-size: 12px;
+ font-weight: 500;
+ cursor: pointer;
+ display: flex;
+ align-items: center;
+ gap: 4px;
 }
 
 .add-filter-button:hover {
-  background-color: #f3f4f6;
+ background-color: #f3f4f6;
 }
 
 .filters-list-container {
-  border: 1px dashed #d1d5db;
-  border-radius: 8px;
-  min-height: 80px;
-  padding: 12px;
-  background-color: #fafafa;
+ border: 1px dashed #d1d5db;
+ border-radius: 8px;
+ min-height: 80px;
+ padding: 12px;
+ background-color: #fafafa;
 }
 
 .filters-list-container p {
-  margin: 0;
-  color: #6b7280;
-  font-size: 14px;
-  text-align: center;
+ margin: 0;
+ color: #6b7280;
+ font-size: 14px;
+ text-align: center;
 }
 
 .generate-button {
-  background-color: #4f39f6;
-  color: white;
-  border: none;
-  padding: 8px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-top: auto;
-  transition: background-color 0.2s;
+ background-color: #4f39f6;
+ color: white;
+ border: none;
+ padding: 8px;
+ border-radius: 8px;
+ font-size: 16px;
+ font-weight: 500;
+ cursor: pointer;
+ margin-top: auto;
+ transition: background-color 0.2s;
 }
 
 .generate-button:hover {
-  background-color: #3e2ecc;
+ background-color: #3e2ecc;
 }
 
 .generate-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+ background-color: #ccc;
+ cursor: not-allowed;
 }
 
 h3 {
-  margin-top: 8px;
-  margin-bottom: 4px;
-  font-size: 16px;
+ margin-top: 8px;
+ margin-bottom: 4px;
+ font-size: 16px;
 }
 
 select[multiple] {
-  width: 100%;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  min-height: 80px;
+ width: 100%;
+ padding: 8px;
+ border-radius: 6px;
+ border: 1px solid #ccc;
+ min-height: 80px;
 }
 
 .filters-list {
-  border: 1px dashed #ccc;
-  min-height: 60px;
-  padding: 8px;
-  border-radius: 6px;
+ border: 1px dashed #ccc;
+ min-height: 60px;
+ padding: 8px;
+ border-radius: 6px;
 }
 
 .filter-item {
-  background-color: #eee;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 14px;
+ background-color: #eee;
+ padding: 4px 8px;
+ border-radius: 6px;
+ font-size: 14px;
 }

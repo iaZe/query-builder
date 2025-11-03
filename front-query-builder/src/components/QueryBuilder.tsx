@@ -60,78 +60,78 @@ export function QueryBuilder() {
   if (isDefinitionsLoading) {
     return (
       <div className="query-builder-sidebar">
-                <p>Carregando definições...</p>     {' '}
+                <p>Carregando definições...</p>     
       </div>
     );
   }
 
   return (
     <>
-           {' '}
+           
       <div className="query-builder-sidebar">
-               {' '}
+               
         <div className="query-section">
-                   {' '}
+                   
           <label className="query-label">
-                       {' '}
+                       
             <span className="icon-wrapper icon-metrics">
-                            <FaChartBar />           {' '}
+                            <FaChartBar />           
             </span>
-                        Métricas          {' '}
+                        Métricas          
           </label>
-                   {' '}
+                   
           <MultiSelectDropdown
             placeholder="Selecione as métricas"
             options={metricOptions}
             selectedValues={query.metrics}
             onChange={setMetrics}
           />
-                 {' '}
+                 
         </div>
-               {' '}
+               
         <div className="query-section">
-                   {' '}
+                   
           <label className="query-label">
-                       {' '}
+                       
             <span className="icon-wrapper icon-dimensions">
-                            <FaTags />           {' '}
+                            <FaTags />           
             </span>
-                        Dimensões          {' '}
+                        Dimensões          
           </label>
-                   {' '}
+                   
           <MultiSelectDropdown
             placeholder="Selecione as dimensões"
             options={dimensionOptions}
             selectedValues={query.dimensions}
             onChange={setDimensions}
           />
-                 {' '}
+                 
         </div>
-               {' '}
+               
         <div className="query-section">
-                   {' '}
+                   
           <label className="query-label">
-                       {' '}
+                       
             <span className="icon-wrapper icon-period">
-                            <FaCalendarAlt />           {' '}
+                            <FaCalendarAlt />           
             </span>
-                        Período          {' '}
+                        Período          
           </label>
-                   {' '}
+                   
           <SingleSelectDropdown
             placeholder="Selecione o período"
             options={PERIOD_OPTIONS}
             value={query.period}
             onChange={setPeriod}
           />
-                 {' '}
+                 
         </div>
-        {query.period === 'custom' && <CustomDateRangePicker />}       {' '}
+        {query.period === 'custom' && <CustomDateRangePicker />}       
         <div className="query-section-row">
-                   {' '}
+                   
           <div className="query-section">
                         <label className="query-label">Ordenar</label>
-                       {' '}
+                       
             <SingleSelectDropdown
               placeholder="Ordem"
               options={ORDER_BY_OPTIONS}
@@ -143,12 +143,12 @@ export function QueryBuilder() {
                 })
               }
             />
-                     {' '}
+                     
           </div>
-                   {' '}
+                   
           <div className="query-section">
                         <label className="query-label">Limite</label>
-                       {' '}
+                       
             <input
               type="number"
               className="query-input"
@@ -157,52 +157,52 @@ export function QueryBuilder() {
               max={100000}
               onChange={(e) => setLimit(Number(e.target.value))}
             />
-                     {' '}
+                     
           </div>
-                 {' '}
+                 
         </div>
-               {' '}
+               
         <div className="query-section">
-                   {' '}
+                   
           <div className="query-label-filter">
-                       {' '}
+                       
             <label className="query-label">
-                           {' '}
+                           
               <span className="icon-wrapper icon-filters">
-                                <FaFilter />             {' '}
+                                <FaFilter />             
               </span>
-                            Filtros            {' '}
+                            Filtros            
             </label>
-                       {' '}
+                       
             <button className="add-filter-button" onClick={openFilterModal}>
-                            <FaPlus /> Adicionar            {' '}
+                            <FaPlus /> Adicionar            
             </button>
-                     {' '}
+                     
           </div>
-                   {' '}
+                   
           <div className="filters-list-container">
-                       {' '}
+                       
             <FilterList
               filters={query.filters}
               getFilterLabel={getFilterLabel}
               onRemoveFilter={removeFilter}
             />
-                     {' '}
+                     
           </div>
-                 {' '}
+                 
         </div>
-               {' '}
+               
         <button
           className="generate-button"
           onClick={fetchVisualization}
           disabled={isLoading || query.metrics.length === 0}
         >
                     {isLoading ? 'Gerando...' : 'Gerar Visualização'}     
-           {' '}
+           
         </button>
-             {' '}
+             
       </div>
-            {isFilterModalOpen && <AddFilterModal />}   {' '}
+            {isFilterModalOpen && <AddFilterModal />}   
     </>
   );
 }
