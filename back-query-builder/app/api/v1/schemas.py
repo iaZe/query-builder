@@ -1,5 +1,5 @@
 import datetime
-from pydantic import BaseModel, field_validator, root_validator, Field
+from pydantic import BaseModel, field_validator, Field, model_validator
 from typing import List, Dict, Any, Optional
 from enum import Enum
 
@@ -111,8 +111,8 @@ class QueryRequest(BaseModel):
     def metrics_must_not_be_empty(cls, v):
         return v
 
-    @root_validator(skip_on_failure=True)
-    def check_date_range_conflict(cls, values):
+    @model_validator(mode='before')
+    def check_date_range_conflict(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """Valida que apenas um tipo de filtro de data foi enviado."""
         if values.get("dateRange") and values.get("customDateRange"):
             raise ValueError(

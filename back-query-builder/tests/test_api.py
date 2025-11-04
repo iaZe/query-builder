@@ -14,9 +14,25 @@ def test_api_query_sucesso(client: TestClient):
 
     data = response.json()
 
-    assert data["data"] == [{"total_vendas": 100.0, "canal_nome": "iFood (Mock)"}]
+    expected_data = [
+        {
+            "metrics": {"total_vendas": 100.0},
+            "dimensions": {"canal_nome": "iFood (Mock)"}
+        }
+    ]
+
+    assert data["data"] == expected_data
+
     assert "SELECT" in data["query_sql"]
     assert "GROUP BY" in data["query_sql"]
+
+    assert "insights" in data
+    
+    assert isinstance(data["insights"], list)
+    
+    assert len(data["insights"]) > 0
+    
+    assert "iFood (Mock)" in data["insights"][0]
 
 
 def test_api_query_erro_validacao(client: TestClient):
