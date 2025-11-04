@@ -1,0 +1,516 @@
+type: collection.insomnia.rest/5.0
+name: Desafio Nola
+meta:
+  id: wrk_3257ccb69a4447cf986b46ecee00c62b
+  created: 1761705877701
+  modified: 1762174606654
+  description: ""
+collection:
+  - name: Query Builder
+    meta:
+      id: fld_c9c4de6460b34871ab4b9c2246769a7c
+      created: 1761835030212
+      modified: 1761835030212
+      sortKey: -1761835030212
+      description: ""
+    children:
+      - url: "{{base_url}}/api/v1/query"
+        name: Produtos + Vendidos Quinta as 18h
+        meta:
+          id: req_6dd61b22b0514c218a2ffd468674915d
+          created: 1761766539420
+          modified: 1761874161231
+          isPrivate: false
+          description: ""
+          sortKey: -1761835035206
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "metrics": ["total_produtos_vendidos"],
+              "dimensions": ["produto_nome"],
+              "filters": [
+                {"field": "canal_nome", "operator": "eq", "value": "iFood"},
+                {"field": "dia_da_semana", "operator": "eq", "value": 4},
+                {"field": "hora_venda", "operator": "gte", "value": 18}
+              ],
+              "order_by": [
+                {"field": "total_produtos_vendidos", "direction": "desc"}
+              ],
+              "limit": 10
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query"
+        name: Performance Operacional por Bairro
+        meta:
+          id: req_d174c1e5f77c46e5b471daf0baba9cb5
+          created: 1761776719001
+          modified: 1761874296408
+          isPrivate: false
+          description: ""
+          sortKey: -1761835035106
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "metrics": ["tempo_medio_entrega_min", "ticket_medio"],
+              "dimensions": ["bairro_entrega"],
+              "filters": [
+                {"field": "canal_tipo", "operator": "eq", "value": "D"}
+              ],
+              "order_by": [
+                {"field": "tempo_medio_entrega_min", "direction": "desc"}
+              ],
+              "limit": 10
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query"
+        name: Produtos + Vendidos Por Loja Domingo as 18h
+        meta:
+          id: req_4c8f08f3650a48c19209b7615a299513
+          created: 1761776836855
+          modified: 1762041880925
+          isPrivate: false
+          description: ""
+          sortKey: -1761835035306
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "metrics": ["total_produtos_vendidos"],
+              "dimensions": ["produto_nome"],
+              "filters": [
+                {"field": "dia_da_semana", "operator": "eq", "value": 2},
+                {"field": "hora_venda", "operator": "gte", "value": 18}
+              ],
+              "order_by": [
+                {"field": "total_produtos_vendidos", "direction": "desc"}
+              ],
+              "limit": 10
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query"
+        name: Produtos + Vendidos no Ifood
+        meta:
+          id: req_b5dcffe088694bb59c28d65cf5ea58a9
+          created: 1761781204598
+          modified: 1762210861487
+          isPrivate: false
+          description: ""
+          sortKey: -1761835035406
+        method: POST
+        body:
+          mimeType: application/json
+          text: |+
+            {
+              "metrics": ["total_vendas"],
+              "dimensions": ["produto_nome"],
+              "filters": [
+                {"field": "canal_nome", "operator": "eq", "value": "iFood"},
+                {"field": "dia_da_semana", "operator": "eq", "value": 4}
+            	],
+            	"customDateRange": {
+                "start_date": "2025-10-03",
+                "end_date": "2025-11-03"
+              },
+              "order_by": [
+                {"field": "total_vendas", "direction": "desc"}
+              ],
+              "limit": 5
+            }
+
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query"
+        name: Receita Por Canal
+        meta:
+          id: req_5c2003dfc05e4f95885317debb366262
+          created: 1762190779766
+          modified: 1762210719698
+          isPrivate: false
+          description: ""
+          sortKey: -1761835035331
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "metrics": ["total_vendas", "percentual_desconto"],
+              "dimensions": ["canal_nome"],
+              "dateRange": "last_30_days",
+              "order_by": [
+            		{"field": "total_vendas", "direction": "desc"}
+            	]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query"
+        name: Produtos + Vendidos 30 dias
+        meta:
+          id: req_ccdab5b05274484ab8f52114c266a517
+          created: 1762190886673
+          modified: 1762190916204
+          isPrivate: false
+          description: ""
+          sortKey: -1761835035343.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+              "metrics": ["total_produtos_vendidos", "total_bruto_itens"],
+              "dimensions": ["produto_nome"],
+              "dateRange": "last_30_days",
+              "order_by": [{"field": "total_produtos_vendidos", "direction": "desc"}],
+              "limit": 10
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query"
+        name: Método de Pagamento + Usado
+        meta:
+          id: req_2e0b36d5ebdd4426a4cacedb3b46dcf0
+          created: 1762190933504
+          modified: 1762190935214
+          isPrivate: false
+          description: ""
+          sortKey: -1761835035337.25
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "metrics": ["total_pedidos", "ticket_medio_robusto"],
+              "dimensions": ["metodo_pagamento"],
+              "dateRange": "last_30_days",
+              "order_by": [{"field": "total_pedidos", "direction": "desc"}]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query"
+        name: Horário de Pico
+        meta:
+          id: req_9dd76d291d25413ea35c8c339552897d
+          created: 1762190949378
+          modified: 1762190951086
+          isPrivate: false
+          description: ""
+          sortKey: -1761835035334.125
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "metrics": ["total_pedidos"],
+              "dimensions": ["hora_venda"],
+              "dateRange": "last_7_days",
+              "order_by": [{"field": "hora_venda", "direction": "asc"}]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: AI Query Builder
+    meta:
+      id: fld_175c41a50d7f4d69ac8ca2c2e45c252a
+      created: 1761835068658
+      modified: 1761835068658
+      sortKey: -1761835068659
+      description: ""
+    children:
+      - url: "{{base_url}}/api/v1/query-from-text"
+        name: Produto + Venvidos no Ifood
+        meta:
+          id: req_e5028bcccee24de8866edbdf1546a0c1
+          created: 1761834975014
+          modified: 1761852952398
+          isPrivate: false
+          description: ""
+          sortKey: -1761835083040
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "prompt": "Quero saber os 3 produtos mais vendidos no iFood"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query-from-text"
+        name: Ticket Médio Pedidos Cancelados
+        meta:
+          id: req_f651284fc70d4c8a82f8f5c3e1621bb0
+          created: 1761835122425
+          modified: 1762033858252
+          isPrivate: false
+          description: ""
+          sortKey: -1761835059223
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "prompt": "Qual o ticket médio por método de pagamento"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query-from-text"
+        name: Salário dos Entregadores
+        meta:
+          id: req_1e70dece0d2a4dd3adcf15ec311edcf2
+          created: 1761835157546
+          modified: 1761852963429
+          isPrivate: false
+          description: ""
+          sortKey: -1761835047314.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "prompt": "Qual o salário médio dos meus entregadores?"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{base_url}}/api/v1/query-from-text"
+        name: Faturamento Total
+        meta:
+          id: req_6cd78e887adf407cb96ff8c991e7b66b
+          created: 1761835180880
+          modified: 1761963542534
+          isPrivate: false
+          description: ""
+          sortKey: -1761835053268.75
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "prompt": "Faturamento total dos últimos 7 dias"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - url: "{{ _.base_url }}"
+    name: Health Check
+    meta:
+      id: req_43c5c4028ac74d9689b305cc6e047d62
+      created: 1761705888442
+      modified: 1762129541144
+      isPrivate: false
+      description: ""
+      sortKey: -1761766430975
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{base_url}}/api/v1/definitions"
+    name: Definitions
+    meta:
+      id: req_f27f21dc010e45818df17f9e3c4fdf43
+      created: 1761774143394
+      modified: 1762174743006
+      isPrivate: false
+      description: ""
+      sortKey: -1761800730593.5
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.2.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_6b1bdc5cd8e48da89294e19f30de406ee3e2b161
+    created: 1761705877706
+    modified: 1762177878203
+  cookies:
+    - key: __cf_bm
+      value: .YeiKc6X22ZOx6YTBQFOgtzRp.DvHvsYxuQa9UUPrvk-1762177879-1.0.1.1-WZ3hwpzT2M2mX.fqgDWb8Pasbh3hLT9iEtEwPGEpPp50ZXpoZ._6DLv6JLxTS_tklH2Rjd26zGhSheGgCWYQ0ORQ7AQunhbLQNVbuLBQhO8
+      domain: ondigitalocean.app
+      path: /
+      secure: true
+      httpOnly: true
+      hostOnly: false
+      creation: 2025-10-31T01:29:20.202Z
+      lastAccessed: 2025-11-03T13:51:18.202Z
+      sameSite: none
+      id: 548fb677-d362-47cb-8992-07e577c75dd7
+environments:
+  name: Query Builder
+  meta:
+    id: env_6b1bdc5cd8e48da89294e19f30de406ee3e2b161
+    created: 1761705877703
+    modified: 1761852851577
+    isPrivate: false
+  subEnvironments:
+    - name: Dev
+      meta:
+        id: env_6170cdfb6b75414084b3d989485adf29
+        created: 1761852815996
+        modified: 1761852878923
+        isPrivate: false
+        sortKey: 1761852815996
+      data:
+        base_url: http://127.0.0.1:8000
+      color: "#6464ff"
+    - name: Prod
+      meta:
+        id: env_be92681305b24bf48b3241f91e67fc36
+        created: 1761852840406
+        modified: 1762135112061
+        isPrivate: false
+        sortKey: 1761852840406
+      data:
+        base_url: https://nola-querybuilder-b7mpq.ondigitalocean.app
+      color: "#64ff64"
