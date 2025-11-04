@@ -21,6 +21,10 @@ Esta plataforma devolve o poder de exploração à Maria através de duas peças
 1.  **Um "Motor" de Alta Performance (Back-end):** Uma API robusta em **FastAPI** que atua como o cérebro. Ela possui um `Query Builder` que traduz JSON em SQL otimizado e um `AI Translator` que entende perguntas em português.
 2.  **Uma "Cabine de Comando" Intuitiva (Front-end):** Uma interface limpa em **React** que atua como o volante. Ela permite que a Maria construa queries visualmente, adicione filtros e, o mais importante, "pergunte" o que quer saber em uma barra de busca.
 
+**➡️ [Acesse a Demo Online Aqui](https://nola-analyzerbuilder-xcrl3.ondigitalocean.app/)**
+
+**➡️ [Acesse a API Aqui](https://nola-querybuilder-b7mpq.ondigitalocean.app/docs)**
+
 
 ## 🏛️ Arquitetura e Componentes do Projeto
 
