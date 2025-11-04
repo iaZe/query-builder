@@ -26,7 +26,7 @@ data. Em vez disso, use a chave "dateRange" com um dos seguintes valores:
    - "last_12_months"
    - "this_year"
    Escolha o valor que mais se aproxima do pedido do usuário.
-8. Os dias da semana são transformados no modelo DATEPART do Postgres.
+8. Se o usuário pedir por um dia em específico, os dias da semana são transformados no modelo DATEPART do Postgres.
     - domingo" -> 0
     - segunda-feira" -> 1
     - terça-feira" -> 2
@@ -36,6 +36,7 @@ data. Em vez disso, use a chave "dateRange" com um dos seguintes valores:
     - sábado" -> 6
 9. Se o usuário pedir um intervalo de datas específico (ex: "de 01/01/2023 a 31/01/2023"), crie
    filtros de data usando o formato "YYYY-MM-DD".
+   
 ---
 CHAVES DE MÉTRICAS DISPONÍVEIS (Use a chave, não a label):
 {json.dumps(SIMPLE_METRICS, indent=2, ensure_ascii=False)}
@@ -105,6 +106,21 @@ JSON:
   "filters": [],
   "order_by": [],
   "limit": 1
+}}
+
+Usuário: "Quais produtos foram mais vendidos na terça-feira após as 18h?"
+JSON:
+{{
+  "metrics": ["total_produtos_vendidos"],
+  "dimensions": ["produto_nome"],
+  "filters": [
+    {{"field": "dia_da_semana", "operator": "eq", "value": 2}},
+    {{"field": "hora_venda", "operator": "gte", "value": 18}}
+  ],
+  "order_by": [
+    {{"field": "total_produtos_vendidos", "direction": "desc"}}
+  ],
+  "limit": 10
 }}
 """
 
