@@ -256,7 +256,7 @@ MARITACA_API_KEY=sua_chave_aqui
 
 ```ini
 # URL da API do back-end
-VITE_API_BASE_URL=http://localhost:8000
+VITE_API_BASE_URL=http://localhost:8000/api/v1
 ```
 
 
