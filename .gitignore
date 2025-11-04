@@ -13,7 +13,7 @@ env/
 
 # Arquivos de configuração de ambiente
 .env
-.env.* 
+.env.
 *.env
 
 # Distribuição / empacotamento

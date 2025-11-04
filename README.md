@@ -237,11 +237,11 @@ Você precisará criar arquivos `.env` em cada módulo.
 
 ```ini
 # Configuração do Banco de Dados PostgreSQL
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=sua_senha_aqui
-DB_NAME=analytics_db
+DB_HOST=host.docker.internal
+DB_PORT=5432  
+DB_USER=challenge
+DB_PASSWORD=senha_aqui   
+DB_NAME=challenge_db  
 
 # Configuração da Aplicação
 APP_ENV=development
